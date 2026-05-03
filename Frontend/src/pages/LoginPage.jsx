@@ -1,19 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function LoginPage() {
-  const { user, loginWithGoogle, loginWithEmail, registerWithEmail } =
-    useAuth();
+  const { loginWithGoogle, loginWithEmail } = useAuth();
   const navigate = useNavigate();
-  const [isRegister, setIsRegister] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (user) navigate("/");
-  }, [user]);
 
   const handleChange = (e) =>
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
@@ -23,15 +17,14 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
     try {
-      if (isRegister) {
-        await registerWithEmail(form.email, form.password, form.name);
-      } else {
-        await loginWithEmail(form.email, form.password);
-      }
-      navigate("/");
+      await loginWithEmail(form.email, form.password);
+      navigate("/home");
     } catch (err) {
       setError(
-        err.message.replace("Firebase: ", "").replace(/\(auth.*\)\.?/, ""),
+        err.message
+          .replace("Firebase: ", "")
+          .replace(/\(auth\/.*?\)\.?/, "")
+          .trim() || "Invalid email or password.",
       );
     } finally {
       setLoading(false);
@@ -40,60 +33,219 @@ export default function LoginPage() {
 
   const handleGoogle = async () => {
     setError("");
+    setLoading(true);
     try {
       await loginWithGoogle();
-      navigate("/");
+      navigate("/home");
     } catch (err) {
-      setError(err.message);
+      if (err.code !== "auth/popup-closed-by-user") {
+        setError(
+          err.message
+            .replace("Firebase: ", "")
+            .replace(/\(auth\/.*?\)\.?/, "")
+            .trim(),
+        );
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
-  return (
-    <div className="min-h-screen bg-vibe-bg flex relative overflow-hidden">
-      {/* Background orbs */}
-      <div className="orb w-96 h-96 bg-vibe-accent/20 top-[-100px] right-[-100px]" />
-      <div className="orb w-64 h-64 bg-purple-500/10 bottom-20 left-20" />
+  const inputStyle = {
+    width: "100%",
+    background: "#16161f",
+    border: "1px solid #1e1e2e",
+    borderRadius: "0.75rem",
+    padding: "0.75rem 1rem",
+    color: "#e8e8f0",
+    fontFamily: "DM Sans, sans-serif",
+    fontSize: "0.95rem",
+    outline: "none",
+    transition: "border-color 0.2s",
+    boxSizing: "border-box",
+  };
 
-      {/* Left panel — branding */}
-      <div className="hidden lg:flex flex-1 flex-col items-center justify-center p-16 relative z-10">
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-3 mb-8">
-            <div className="w-12 h-12 bg-vibe-accent rounded-2xl flex items-center justify-center shadow-lg shadow-vibe-accent/40">
-              <span className="text-2xl">🎵</span>
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#0a0a0f",
+        display: "flex",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      {/* Bg orbs */}
+      <div
+        style={{
+          position: "fixed",
+          width: 500,
+          height: 500,
+          borderRadius: "50%",
+          background: "rgba(108,99,255,0.07)",
+          filter: "blur(100px)",
+          top: -150,
+          right: -150,
+          pointerEvents: "none",
+          zIndex: 0,
+        }}
+      />
+      <div
+        style={{
+          position: "fixed",
+          width: 350,
+          height: 350,
+          borderRadius: "50%",
+          background: "rgba(124,58,237,0.05)",
+          filter: "blur(80px)",
+          bottom: 100,
+          left: -100,
+          pointerEvents: "none",
+          zIndex: 0,
+        }}
+      />
+
+      {/* Left branding panel (hidden on mobile) */}
+      <div
+        id="left-panel"
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "4rem",
+          position: "relative",
+          zIndex: 1,
+          display: "none",
+        }}
+      >
+        <div style={{ textAlign: "center", maxWidth: 380 }}>
+          <Link
+            to="/"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.75rem",
+              marginBottom: "3rem",
+              textDecoration: "none",
+            }}
+          >
+            <div
+              style={{
+                width: 44,
+                height: 44,
+                background: "#6c63ff",
+                borderRadius: "0.875rem",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: "0 0 24px rgba(108,99,255,0.4)",
+              }}
+            >
+              <span style={{ fontSize: "1.25rem" }}>🎵</span>
             </div>
-            <span className="font-display text-4xl font-bold text-gradient">
+            <span
+              style={{
+                fontFamily: "Clash Display, sans-serif",
+                fontSize: "1.75rem",
+                fontWeight: 700,
+                background: "linear-gradient(135deg,#6c63ff,#a78bfa)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
               Vibezfy
             </span>
-          </div>
+          </Link>
 
-          {/* Vinyl illustration */}
-          <div className="relative w-64 h-64 mx-auto mb-10">
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-vibe-accent via-purple-700 to-vibe-bg border-4 border-vibe-border vinyl-spin">
-              <div className="absolute inset-8 rounded-full bg-vibe-bg/80 flex items-center justify-center">
-                <div className="w-4 h-4 rounded-full bg-vibe-accent" />
-              </div>
-              {/* Grooves */}
-              {[16, 24, 32].map((i) => (
-                <div
-                  key={i}
-                  className="absolute rounded-full border border-white/5"
-                  style={{ inset: `${i}px` }}
-                />
-              ))}
+          <div
+            style={{
+              position: "relative",
+              width: 200,
+              height: 200,
+              margin: "0 auto 2.5rem",
+            }}
+          >
+            <div
+              className="vinyl-spin"
+              style={{
+                width: "100%",
+                height: "100%",
+                borderRadius: "50%",
+                background:
+                  "linear-gradient(135deg, #6c63ff, #4c44c0, #0a0a0f)",
+                border: "3px solid #1e1e2e",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                position: "relative",
+              }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 28,
+                  borderRadius: "50%",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 48,
+                  borderRadius: "50%",
+                  border: "1px solid rgba(255,255,255,0.04)",
+                }}
+              />
+              <div
+                style={{
+                  width: 18,
+                  height: 18,
+                  borderRadius: "50%",
+                  background: "#6c63ff",
+                  boxShadow: "0 0 12px rgba(108,99,255,0.8)",
+                }}
+              />
             </div>
-            <div className="absolute inset-0 rounded-full bg-vibe-accent/10 animate-pulse-slow" />
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                borderRadius: "50%",
+                background: "rgba(108,99,255,0.08)",
+                animation: "moodPulse 3s ease-in-out infinite",
+              }}
+            />
           </div>
 
-          <h2 className="font-display text-3xl font-bold text-vibe-text mb-4">
-            Music that feels you.
+          <h2
+            style={{
+              fontFamily: "Clash Display, sans-serif",
+              fontSize: "1.75rem",
+              fontWeight: 700,
+              color: "#e8e8f0",
+              marginBottom: "0.75rem",
+            }}
+          >
+            Welcome back
           </h2>
-          <p className="text-vibe-muted text-lg leading-relaxed max-w-sm">
-            Point your camera, let AI read your mood, and get the perfect
-            soundtrack — instantly.
+          <p
+            style={{
+              color: "#6b6b80",
+              fontFamily: "DM Sans, sans-serif",
+              lineHeight: 1.6,
+              marginBottom: "2rem",
+            }}
+          >
+            Your mood-powered soundtrack is waiting.
           </p>
-
-          {/* Mood pills */}
-          <div className="flex flex-wrap gap-2 justify-center mt-8">
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 8,
+              justifyContent: "center",
+            }}
+          >
             {[
               "😊 Happy",
               "😢 Sad",
@@ -103,7 +255,13 @@ export default function LoginPage() {
             ].map((m) => (
               <span
                 key={m}
-                className="px-3 py-1 rounded-full glass text-sm text-vibe-muted"
+                className="glass"
+                style={{
+                  padding: "4px 12px",
+                  borderRadius: "2rem",
+                  fontSize: "0.8rem",
+                  color: "#6b6b80",
+                }}
               >
                 {m}
               </span>
@@ -112,34 +270,119 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Right panel — auth form */}
-      <div className="flex-1 flex items-center justify-center p-8 relative z-10">
-        <div className="w-full max-w-md">
+      {/* Right form panel */}
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "2rem",
+          position: "relative",
+          zIndex: 1,
+        }}
+      >
+        <div style={{ width: "100%", maxWidth: 420 }}>
           {/* Mobile logo */}
-          <div className="flex lg:hidden items-center gap-3 mb-10">
-            <div className="w-10 h-10 bg-vibe-accent rounded-xl flex items-center justify-center">
-              <span className="text-xl">🎵</span>
+          <Link
+            to="/"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.625rem",
+              marginBottom: "2.5rem",
+              textDecoration: "none",
+            }}
+          >
+            <div
+              style={{
+                width: 36,
+                height: 36,
+                background: "#6c63ff",
+                borderRadius: "0.75rem",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <span>🎵</span>
             </div>
-            <span className="font-display text-3xl font-bold text-gradient">
+            <span
+              style={{
+                fontFamily: "Clash Display, sans-serif",
+                fontSize: "1.4rem",
+                fontWeight: 700,
+                background: "linear-gradient(135deg,#6c63ff,#a78bfa)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
               Vibezfy
             </span>
-          </div>
+          </Link>
 
-          <h1 className="font-display text-3xl font-bold text-vibe-text mb-2">
-            {isRegister ? "Create account" : "Welcome back"}
+          <h1
+            style={{
+              fontFamily: "Clash Display, sans-serif",
+              fontSize: "2rem",
+              fontWeight: 700,
+              color: "#e8e8f0",
+              marginBottom: "0.4rem",
+            }}
+          >
+            Sign in
           </h1>
-          <p className="text-vibe-muted mb-8">
-            {isRegister
-              ? "Start your vibe-driven music journey"
-              : "Your soundtrack is waiting"}
+          <p
+            style={{
+              color: "#6b6b80",
+              fontFamily: "DM Sans, sans-serif",
+              marginBottom: "2rem",
+            }}
+          >
+            No account?{" "}
+            <Link
+              to="/signup"
+              style={{
+                color: "#6c63ff",
+                textDecoration: "none",
+                fontWeight: 500,
+              }}
+            >
+              Sign up free
+            </Link>
           </p>
 
-          {/* Google button */}
+          {/* Google */}
           <button
             onClick={handleGoogle}
-            className="w-full flex items-center justify-center gap-3 py-3 px-6 rounded-xl glass border border-vibe-border hover:border-vibe-accent/40 transition-all duration-200 mb-6 font-body font-medium text-vibe-text"
+            disabled={loading}
+            style={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "0.75rem",
+              padding: "0.8rem 1.5rem",
+              borderRadius: "0.75rem",
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid #1e1e2e",
+              color: "#e8e8f0",
+              fontFamily: "DM Sans, sans-serif",
+              fontWeight: 500,
+              cursor: loading ? "not-allowed" : "pointer",
+              opacity: loading ? 0.7 : 1,
+              transition: "border-color 0.2s",
+              marginBottom: "1.5rem",
+            }}
+            onMouseEnter={(e) => {
+              if (!loading)
+                e.currentTarget.style.borderColor = "rgba(108,99,255,0.4)";
+            }}
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.borderColor = "#1e1e2e")
+            }
           >
-            <svg className="w-5 h-5" viewBox="0 0 24 24">
+            <svg width="18" height="18" viewBox="0 0 24 24">
               <path
                 fill="#4285F4"
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -160,31 +403,41 @@ export default function LoginPage() {
             Continue with Google
           </button>
 
-          <div className="flex items-center gap-4 mb-6">
-            <div className="flex-1 h-px bg-vibe-border" />
-            <span className="text-vibe-muted text-sm">or</span>
-            <div className="flex-1 h-px bg-vibe-border" />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "1rem",
+              marginBottom: "1.5rem",
+            }}
+          >
+            <div style={{ flex: 1, height: 1, background: "#1e1e2e" }} />
+            <span
+              style={{
+                color: "#6b6b80",
+                fontSize: "0.8rem",
+                fontFamily: "DM Sans, sans-serif",
+              }}
+            >
+              or email
+            </span>
+            <div style={{ flex: 1, height: 1, background: "#1e1e2e" }} />
           </div>
 
-          {/* Email form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {isRegister && (
-              <div>
-                <label className="block text-sm text-vibe-muted mb-1.5 font-body">
-                  Name
-                </label>
-                <input
-                  name="name"
-                  value={form.name}
-                  onChange={handleChange}
-                  placeholder="Your name"
-                  className="w-full bg-vibe-card border border-vibe-border rounded-xl px-4 py-3 text-vibe-text placeholder-vibe-muted/50 focus:outline-none focus:border-vibe-accent transition-colors font-body"
-                  required
-                />
-              </div>
-            )}
+          <form
+            onSubmit={handleSubmit}
+            style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+          >
             <div>
-              <label className="block text-sm text-vibe-muted mb-1.5 font-body">
+              <label
+                style={{
+                  display: "block",
+                  fontSize: "0.85rem",
+                  color: "#6b6b80",
+                  marginBottom: 6,
+                  fontFamily: "DM Sans, sans-serif",
+                }}
+              >
                 Email
               </label>
               <input
@@ -193,12 +446,22 @@ export default function LoginPage() {
                 value={form.email}
                 onChange={handleChange}
                 placeholder="you@example.com"
-                className="w-full bg-vibe-card border border-vibe-border rounded-xl px-4 py-3 text-vibe-text placeholder-vibe-muted/50 focus:outline-none focus:border-vibe-accent transition-colors font-body"
                 required
+                style={inputStyle}
+                onFocus={(e) => (e.target.style.borderColor = "#6c63ff")}
+                onBlur={(e) => (e.target.style.borderColor = "#1e1e2e")}
               />
             </div>
             <div>
-              <label className="block text-sm text-vibe-muted mb-1.5 font-body">
+              <label
+                style={{
+                  display: "block",
+                  fontSize: "0.85rem",
+                  color: "#6b6b80",
+                  marginBottom: 6,
+                  fontFamily: "DM Sans, sans-serif",
+                }}
+              >
                 Password
               </label>
               <input
@@ -207,13 +470,25 @@ export default function LoginPage() {
                 value={form.password}
                 onChange={handleChange}
                 placeholder="••••••••"
-                className="w-full bg-vibe-card border border-vibe-border rounded-xl px-4 py-3 text-vibe-text placeholder-vibe-muted/50 focus:outline-none focus:border-vibe-accent transition-colors font-body"
                 required
+                style={inputStyle}
+                onFocus={(e) => (e.target.style.borderColor = "#6c63ff")}
+                onBlur={(e) => (e.target.style.borderColor = "#1e1e2e")}
               />
             </div>
 
             {error && (
-              <div className="text-red-400 text-sm bg-red-400/10 border border-red-400/20 rounded-xl px-4 py-3">
+              <div
+                style={{
+                  background: "rgba(248,113,113,0.08)",
+                  border: "1px solid rgba(248,113,113,0.2)",
+                  borderRadius: "0.75rem",
+                  padding: "0.75rem 1rem",
+                  color: "#f87171",
+                  fontSize: "0.875rem",
+                  fontFamily: "DM Sans, sans-serif",
+                }}
+              >
                 {error}
               </div>
             )}
@@ -221,37 +496,43 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full text-center disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-primary"
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "0.5rem",
+                marginTop: "0.25rem",
+              }}
             >
               {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  {isRegister ? "Creating account..." : "Signing in..."}
-                </span>
-              ) : isRegister ? (
-                "Create account"
+                <>
+                  <span
+                    style={{
+                      width: 16,
+                      height: 16,
+                      border: "2px solid rgba(255,255,255,0.3)",
+                      borderTopColor: "white",
+                      borderRadius: "50%",
+                      animation: "spin 0.7s linear infinite",
+                      display: "inline-block",
+                    }}
+                  />{" "}
+                  Signing in...
+                </>
               ) : (
-                "Sign in"
+                "Sign in →"
               )}
             </button>
           </form>
-
-          <p className="text-center text-vibe-muted mt-6 text-sm">
-            {isRegister
-              ? "Already have an account? "
-              : "Don't have an account? "}
-            <button
-              onClick={() => {
-                setIsRegister((r) => !r);
-                setError("");
-              }}
-              className="text-vibe-accent hover:underline font-medium"
-            >
-              {isRegister ? "Sign in" : "Sign up"}
-            </button>
-          </p>
         </div>
       </div>
+
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @media (min-width: 1024px) { #left-panel { display: flex !important; } }
+      `}</style>
     </div>
   );
 }

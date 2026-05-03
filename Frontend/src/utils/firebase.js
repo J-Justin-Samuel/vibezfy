@@ -8,10 +8,20 @@ const firebaseConfig = {
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
+
+// Validate config on startup so missing vars are obvious
+const missing = Object.entries(firebaseConfig)
+  .filter(([k, v]) => !v && k !== "measurementId")
+  .map(([k]) => k);
+if (missing.length) {
+  console.error("[Vibezfy] Missing Firebase env vars:", missing);
+}
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: "select_account" });
 
 export default app;
