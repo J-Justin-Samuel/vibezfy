@@ -1,84 +1,57 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
-const FEATURES = [
+const TICKER = [
+  "FEEL THE MUSIC",
+  "READ YOUR MOOD",
+  "SPOTIFY POWERED",
+  "AI DETECTION",
+  "VIBE OR DIE",
+  "POINT CAMERA",
+  "GET PLAYLIST",
+];
+
+const STEPS = [
   {
-    icon: "🎭",
-    title: "Mood Detection",
-    desc: "Point your camera for 3 seconds. Our AI reads your facial expressions and maps them to the perfect emotional soundtrack.",
+    n: "01",
+    title: "OPEN CAMERA",
+    desc: "Hit the Vibe button. Front camera activates. No photos stored.",
   },
   {
-    icon: "🎵",
-    title: "Spotify Powered",
-    desc: "Access millions of songs, curated playlists, and new releases. Full Spotify integration with real-time playback.",
+    n: "02",
+    title: "AI READS MOOD",
+    desc: "face-api.js runs locally in your browser. Detects 7 emotional states in real time.",
   },
   {
-    icon: "🔍",
-    title: "Smart Search",
-    desc: "Find any track, artist, album or playlist instantly. Debounced, fast, and filtered exactly how you want it.",
-  },
-  {
-    icon: "⚡",
-    title: "Real-time Playback",
-    desc: "A sleek bottom player with seek, volume, skip and queue — no page reloads, no interruptions.",
+    n: "03",
+    title: "MUSIC PLAYS",
+    desc: "Spotify serves the perfect playlist for your exact emotion. No skips needed.",
   },
 ];
 
 const MOODS = [
-  { emoji: "😊", label: "Happy", color: "#fbbf24" },
-  { emoji: "😢", label: "Sad", color: "#60a5fa" },
-  { emoji: "😠", label: "Angry", color: "#f87171" },
-  { emoji: "😲", label: "Surprised", color: "#a78bfa" },
-  { emoji: "😨", label: "Calm", color: "#34d399" },
-  { emoji: "😐", label: "Neutral", color: "#94a3b8" },
+  { l: "HAPPY", c: "#FFE566" },
+  { l: "SAD", c: "#66AAFF" },
+  { l: "ANGRY", c: "#FF6666" },
+  { l: "SURPRISED", c: "#CC88FF" },
+  { l: "CALM", c: "#66FFCC" },
+  { l: "NEUTRAL", c: "#AAAAAA" },
 ];
-
-// Animated waveform bars
-function Waveform({
-  bars = 12,
-  height = 40,
-  color = "#6c63ff",
-  playing = true,
-}) {
-  return (
-    <div style={{ display: "flex", alignItems: "flex-end", gap: 3, height }}>
-      {Array.from({ length: bars }).map((_, i) => (
-        <div
-          key={i}
-          style={{
-            width: 4,
-            borderRadius: 2,
-            background: color,
-            height: `${30 + Math.sin(i * 0.8) * 60}%`,
-            opacity: playing ? 0.7 + (i % 3) * 0.1 : 0.3,
-            animation: playing
-              ? `wave ${0.8 + (i % 4) * 0.2}s ease-in-out infinite alternate`
-              : "none",
-            animationDelay: `${i * 0.07}s`,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
 
 export default function LandingPage() {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
   const [activeMood, setActiveMood] = useState(0);
-  const heroRef = useRef(null);
 
-  // If already logged in, skip landing and go straight to app
   useEffect(() => {
     if (!loading && user) navigate("/home", { replace: true });
   }, [user, loading]);
 
-  // Cycle through moods
   useEffect(() => {
     const t = setInterval(
       () => setActiveMood((m) => (m + 1) % MOODS.length),
-      2000,
+      1800,
     );
     return () => clearInterval(t);
   }, []);
@@ -86,838 +59,559 @@ export default function LandingPage() {
   const mood = MOODS[activeMood];
 
   return (
-    <div
-      style={{
-        background: "#0a0a0f",
-        minHeight: "100vh",
-        color: "#e8e8f0",
-        overflowX: "hidden",
-      }}
-    >
-      {/* Background orbs */}
-      <div
-        style={{
-          position: "fixed",
-          inset: 0,
-          pointerEvents: "none",
-          zIndex: 0,
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            width: 600,
-            height: 600,
-            borderRadius: "50%",
-            background: "rgba(108,99,255,0.07)",
-            filter: "blur(100px)",
-            top: -100,
-            right: -100,
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            width: 400,
-            height: 400,
-            borderRadius: "50%",
-            background: "rgba(124,58,237,0.06)",
-            filter: "blur(80px)",
-            bottom: 200,
-            left: -100,
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            width: 300,
-            height: 300,
-            borderRadius: "50%",
-            background: "rgba(56,189,248,0.04)",
-            filter: "blur(60px)",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%,-50%)",
-          }}
-        />
-      </div>
-
-      {/* ── NAVBAR ── */}
-      <nav
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 50,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "1rem 2rem",
-          background: "rgba(10,10,15,0.85)",
-          backdropFilter: "blur(20px)",
-          borderBottom: "1px solid rgba(255,255,255,0.05)",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <div
-            style={{
-              width: 36,
-              height: 36,
-              background: "#6c63ff",
-              borderRadius: "0.75rem",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0 0 20px rgba(108,99,255,0.4)",
-            }}
-          >
-            <span style={{ fontSize: "1.1rem" }}>🎵</span>
-          </div>
-          <span
-            style={{
-              fontFamily: "Clash Display, sans-serif",
-              fontSize: "1.5rem",
-              fontWeight: 700,
-              background: "linear-gradient(135deg, #6c63ff, #a78bfa)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            Vibezfy
-          </span>
+    <div className="land-root">
+      {/* NAV */}
+      <nav className="land-nav">
+        <div className="nav-logo">
+          <div className="nav-logo-box">V</div>
+          <span className="nav-logo-text">VIBEZFY</span>
         </div>
-        <div style={{ display: "flex", gap: "0.75rem" }}>
-          <button
-            className="btn-ghost"
-            style={{ padding: "0.5rem 1.25rem", fontSize: "0.9rem" }}
-            onClick={() => navigate("/login")}
-          >
-            Sign in
+        <div className="nav-btns">
+          <button className="nav-btn-ghost" onClick={() => navigate("/login")}>
+            SIGN IN
           </button>
-          <button
-            className="btn-primary"
-            style={{ padding: "0.5rem 1.25rem", fontSize: "0.9rem" }}
-            onClick={() => navigate("/signup")}
-          >
-            Get started
+          <button className="nav-btn-solid" onClick={() => navigate("/signup")}>
+            GET STARTED →
           </button>
         </div>
       </nav>
 
-      {/* ── HERO ── */}
-      <section
-        ref={heroRef}
-        style={{
-          position: "relative",
-          zIndex: 1,
-          textAlign: "center",
-          padding: "6rem 2rem 4rem",
-        }}
-      >
-        {/* Badge */}
-        <div
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "0.5rem",
-            background: "rgba(108,99,255,0.12)",
-            border: "1px solid rgba(108,99,255,0.3)",
-            borderRadius: "2rem",
-            padding: "0.4rem 1rem",
-            marginBottom: "2rem",
-            fontFamily: "DM Sans, sans-serif",
-            fontSize: "0.85rem",
-            color: "#a78bfa",
-          }}
-        >
-          <span
-            style={{
-              width: 6,
-              height: 6,
-              borderRadius: "50%",
-              background: "#6c63ff",
-              display: "inline-block",
-              animation: "moodPulse 2s ease-in-out infinite",
-            }}
-          />
-          AI-Powered Mood Music
+      {/* HERO */}
+      <section className="hero">
+        <div className="hero-left">
+          <div className="hero-tag">
+            <span className="hero-tag-dot" />
+            AI-POWERED MOOD MUSIC
+          </div>
+          <h1 className="hero-title">
+            MUSIC
+            <br />
+            <span className="hero-title-accent">THAT</span>
+            <br />
+            FEELS
+            <br />
+            <span className="hero-title-stroke">YOU.</span>
+          </h1>
+          <p className="hero-desc">
+            Point your camera. AI reads your face. Spotify plays the perfect
+            playlist — instantly.
+          </p>
+          <div className="hero-cta">
+            <button className="cta-solid" onClick={() => navigate("/signup")}>
+              START FOR FREE →
+            </button>
+            <button className="cta-ghost" onClick={() => navigate("/login")}>
+              SIGN IN
+            </button>
+          </div>
         </div>
 
-        <h1
-          style={{
-            fontFamily: "Clash Display, sans-serif",
-            fontSize: "clamp(2.5rem, 7vw, 5rem)",
-            fontWeight: 700,
-            lineHeight: 1.1,
-            marginBottom: "1.5rem",
-            maxWidth: 800,
-            margin: "0 auto 1.5rem",
-          }}
-        >
-          Music that{" "}
-          <span
-            style={{
-              background: "linear-gradient(135deg, #6c63ff, #a78bfa, #38bdf8)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            feels you.
-          </span>
-        </h1>
+        <div className="hero-right">
+          {/* Mood display card */}
+          <div className="mood-card">
+            <div className="mood-card-header">
+              <div className="live-dot" />
+              <span className="live-text">LIVE DETECTION</span>
+            </div>
 
-        <p
-          style={{
-            fontFamily: "DM Sans, sans-serif",
-            fontSize: "clamp(1rem, 2.5vw, 1.25rem)",
-            color: "#6b6b80",
-            maxWidth: 560,
-            margin: "0 auto 3rem",
-            lineHeight: 1.6,
-          }}
-        >
-          Point your camera, let AI read your mood, and get a Spotify playlist
-          tailored to exactly how you feel — right now.
-        </p>
+            {/* Fake viewfinder */}
+            <div className="viewfinder">
+              <div className="vf-corner vf-tl" />
+              <div className="vf-corner vf-tr" />
+              <div className="vf-corner vf-bl" />
+              <div className="vf-corner vf-br" />
+              <div className="vf-scanline" />
+              <div className="vf-face">
+                <div className="vf-face-circle" />
+                <div className="vf-face-bar" />
+                <div className="vf-face-bar short" />
+              </div>
+            </div>
 
-        <div
-          style={{
-            display: "flex",
-            gap: "1rem",
-            justifyContent: "center",
-            flexWrap: "wrap",
-            marginBottom: "4rem",
-          }}
-        >
-          <button
-            className="btn-primary"
-            style={{
-              padding: "0.9rem 2rem",
-              fontSize: "1rem",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-            }}
-            onClick={() => navigate("/signup")}
-          >
-            Start for free →
-          </button>
-          <button
-            className="btn-ghost"
-            style={{ padding: "0.9rem 2rem", fontSize: "1rem" }}
-            onClick={() => navigate("/login")}
-          >
-            Sign in
-          </button>
-        </div>
+            {/* Detected mood */}
+            <div className="detected-row" style={{ "--mc": mood.c }}>
+              <div className="detected-label">DETECTED</div>
+              <div className="detected-mood">{mood.l}</div>
+              <div className="detected-bars">
+                {[6, 10, 14, 10, 8, 12, 9].map((h, i) => (
+                  <div
+                    key={i}
+                    className="det-bar"
+                    style={{
+                      height: h,
+                      background: mood.c,
+                      animationDelay: `${i * 0.1}s`,
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
 
-        {/* Hero visual — mood detector mockup */}
-        <div style={{ maxWidth: 480, margin: "0 auto", position: "relative" }}>
-          {/* Fake camera card */}
-          <div
-            className="glass"
-            style={{
-              borderRadius: "1.5rem",
-              padding: "1.5rem",
-              border: "1px solid rgba(255,255,255,0.08)",
-              boxShadow:
-                "0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(108,99,255,0.1)",
-            }}
-          >
-            {/* Camera viewfinder */}
-            <div
-              style={{
-                borderRadius: "1rem",
-                background: "#050508",
-                height: 220,
-                marginBottom: "1rem",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                position: "relative",
-                overflow: "hidden",
-                border: "1px solid #1e1e2e",
-              }}
-            >
-              {/* Face silhouette */}
-              <div
-                style={{ textAlign: "center", position: "relative", zIndex: 1 }}
-              >
+            {/* Mood grid */}
+            <div className="hero-mood-grid">
+              {MOODS.map(({ l, c }, i) => (
                 <div
-                  style={{
-                    fontSize: "5rem",
-                    marginBottom: "0.5rem",
-                    transition: "all 0.5s",
-                    filter: "drop-shadow(0 0 20px rgba(108,99,255,0.5))",
-                  }}
+                  key={l}
+                  className={`hero-mood-chip ${i === activeMood ? "active" : ""}`}
+                  style={{ "--hc": c }}
                 >
-                  {mood.emoji}
+                  {l}
                 </div>
-              </div>
-
-              {/* Scanning lines */}
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  backgroundImage:
-                    "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(108,99,255,0.03) 3px, rgba(108,99,255,0.03) 4px)",
-                  pointerEvents: "none",
-                }}
-              />
-
-              {/* Corner brackets */}
-              {[
-                {
-                  top: 12,
-                  left: 12,
-                  borderTop: "2px solid #6c63ff",
-                  borderLeft: "2px solid #6c63ff",
-                },
-                {
-                  top: 12,
-                  right: 12,
-                  borderTop: "2px solid #6c63ff",
-                  borderRight: "2px solid #6c63ff",
-                },
-                {
-                  bottom: 12,
-                  left: 12,
-                  borderBottom: "2px solid #6c63ff",
-                  borderLeft: "2px solid #6c63ff",
-                },
-                {
-                  bottom: 12,
-                  right: 12,
-                  borderBottom: "2px solid #6c63ff",
-                  borderRight: "2px solid #6c63ff",
-                },
-              ].map((s, i) => (
-                <div
-                  key={i}
-                  style={{ position: "absolute", width: 20, height: 20, ...s }}
-                />
               ))}
-
-              {/* Live badge */}
-              <div
-                style={{
-                  position: "absolute",
-                  top: 12,
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 5,
-                  background: "rgba(0,0,0,0.6)",
-                  borderRadius: "1rem",
-                  padding: "3px 10px",
-                  fontSize: "0.7rem",
-                  fontFamily: "DM Sans, sans-serif",
-                  color: "#e8e8f0",
-                }}
-              >
-                <div
-                  style={{
-                    width: 6,
-                    height: 6,
-                    borderRadius: "50%",
-                    background: "#f87171",
-                    animation: "moodPulse 1.5s ease-in-out infinite",
-                  }}
-                />
-                LIVE
-              </div>
             </div>
-
-            {/* Detected mood bar */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.75rem",
-                background: `${mood.color}15`,
-                border: `1px solid ${mood.color}30`,
-                borderRadius: "0.75rem",
-                padding: "0.75rem 1rem",
-                marginBottom: "0.75rem",
-                transition: "all 0.5s",
-              }}
-            >
-              <span style={{ fontSize: "1.5rem" }}>{mood.emoji}</span>
-              <div>
-                <p
-                  style={{
-                    fontFamily: "DM Sans, sans-serif",
-                    fontWeight: 600,
-                    color: mood.color,
-                    fontSize: "0.9rem",
-                    transition: "color 0.5s",
-                  }}
-                >
-                  Detected: {mood.label}
-                </p>
-                <p
-                  style={{
-                    color: "#6b6b80",
-                    fontSize: "0.75rem",
-                    fontFamily: "DM Sans, sans-serif",
-                  }}
-                >
-                  {Math.floor(75 + activeMood * 3)}% confidence
-                </p>
-              </div>
-              <div style={{ marginLeft: "auto" }}>
-                <Waveform bars={6} height={24} color={mood.color} />
-              </div>
-            </div>
-
-            {/* Playlist suggestion */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.75rem",
-                background: "#16161f",
-                borderRadius: "0.75rem",
-                padding: "0.75rem",
-              }}
-            >
-              <div
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: "0.5rem",
-                  background: `linear-gradient(135deg, ${mood.color}80, #6c63ff80)`,
-                  flexShrink: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "1.2rem",
-                }}
-              >
-                🎵
-              </div>
-              <div>
-                <p
-                  style={{
-                    fontFamily: "DM Sans, sans-serif",
-                    fontSize: "0.85rem",
-                    fontWeight: 500,
-                    color: "#e8e8f0",
-                  }}
-                >
-                  {mood.label} Vibes Playlist
-                </p>
-                <p style={{ color: "#6b6b80", fontSize: "0.75rem" }}>
-                  Auto-generated · Spotify
-                </p>
-              </div>
-              <button
-                style={{
-                  marginLeft: "auto",
-                  width: 32,
-                  height: 32,
-                  borderRadius: "50%",
-                  background: "#6c63ff",
-                  border: "none",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "white",
-                  fontSize: "0.9rem",
-                }}
-              >
-                ▶
-              </button>
-            </div>
-          </div>
-
-          {/* Floating mood pills */}
-          <div
-            style={{
-              position: "absolute",
-              top: -20,
-              left: -60,
-              display: "flex",
-              flexDirection: "column",
-              gap: 8,
-            }}
-          >
-            {MOODS.slice(0, 3).map((m, i) => (
-              <div
-                key={m.label}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                  background: "rgba(17,17,24,0.9)",
-                  border: "1px solid #1e1e2e",
-                  borderRadius: "2rem",
-                  padding: "4px 12px",
-                  fontSize: "0.8rem",
-                  fontFamily: "DM Sans, sans-serif",
-                  color: "#6b6b80",
-                  transform: `translateX(${i * -10}px)`,
-                  animation: `float ${3 + i * 0.5}s ease-in-out infinite`,
-                  animationDelay: `${i * 0.3}s`,
-                }}
-              >
-                {m.emoji} {m.label}
-              </div>
-            ))}
-          </div>
-
-          <div
-            style={{
-              position: "absolute",
-              top: 20,
-              right: -60,
-              display: "flex",
-              flexDirection: "column",
-              gap: 8,
-            }}
-          >
-            {MOODS.slice(3).map((m, i) => (
-              <div
-                key={m.label}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                  background: "rgba(17,17,24,0.9)",
-                  border: "1px solid #1e1e2e",
-                  borderRadius: "2rem",
-                  padding: "4px 12px",
-                  fontSize: "0.8rem",
-                  fontFamily: "DM Sans, sans-serif",
-                  color: "#6b6b80",
-                  animation: `float ${3.5 + i * 0.5}s ease-in-out infinite`,
-                  animationDelay: `${i * 0.4}s`,
-                }}
-              >
-                {m.emoji} {m.label}
-              </div>
-            ))}
           </div>
         </div>
       </section>
 
-      {/* ── HOW IT WORKS ── */}
-      <section
-        style={{
-          position: "relative",
-          zIndex: 1,
-          padding: "5rem 2rem",
-          textAlign: "center",
-        }}
-      >
-        <p
-          style={{
-            color: "#6c63ff",
-            fontFamily: "DM Sans, sans-serif",
-            fontSize: "0.85rem",
-            fontWeight: 600,
-            letterSpacing: "0.1em",
-            textTransform: "uppercase",
-            marginBottom: "0.75rem",
-          }}
-        >
-          How it works
-        </p>
-        <h2
-          style={{
-            fontFamily: "Clash Display, sans-serif",
-            fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
-            fontWeight: 700,
-            marginBottom: "3.5rem",
-          }}
-        >
-          Three seconds to the perfect playlist
-        </h2>
+      {/* TICKER */}
+      <div className="ticker-wrap">
+        <div className="ticker-track">
+          {[...TICKER, ...TICKER, ...TICKER].map((t, i) => (
+            <span key={i} className="ticker-item">
+              {t} <span className="ticker-dot">✦</span>
+            </span>
+          ))}
+        </div>
+      </div>
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "2rem",
-            flexWrap: "wrap",
-            maxWidth: 900,
-            margin: "0 auto",
-          }}
-        >
-          {[
-            {
-              step: "01",
-              icon: "📸",
-              title: "Open camera",
-              desc: "Hit the Vibe button. Your front camera activates — no photos stored.",
-            },
-            {
-              step: "02",
-              icon: "🧠",
-              title: "AI reads mood",
-              desc: "face-api.js runs locally in your browser, detecting 7 emotional states.",
-            },
-            {
-              step: "03",
-              icon: "🎵",
-              title: "Music plays",
-              desc: "We search Spotify for the perfect playlist matching your exact emotion.",
-            },
-          ].map(({ step, icon, title, desc }) => (
-            <div key={step} style={{ flex: "1 1 240px", maxWidth: 280 }}>
-              <div
-                style={{
-                  width: 64,
-                  height: 64,
-                  borderRadius: "1rem",
-                  background: "rgba(108,99,255,0.12)",
-                  border: "1px solid rgba(108,99,255,0.2)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "1.75rem",
-                  margin: "0 auto 1rem",
-                }}
-              >
-                {icon}
-              </div>
-              <div
-                style={{
-                  color: "#6c63ff",
-                  fontFamily: "JetBrains Mono, monospace",
-                  fontSize: "0.75rem",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                {step}
-              </div>
-              <h3
-                style={{
-                  fontFamily: "Clash Display, sans-serif",
-                  fontSize: "1.1rem",
-                  fontWeight: 600,
-                  marginBottom: "0.5rem",
-                }}
-              >
-                {title}
-              </h3>
-              <p
-                style={{
-                  color: "#6b6b80",
-                  fontFamily: "DM Sans, sans-serif",
-                  fontSize: "0.9rem",
-                  lineHeight: 1.6,
-                }}
-              >
-                {desc}
-              </p>
+      {/* HOW IT WORKS */}
+      <section className="how-section">
+        <div className="how-label">HOW IT WORKS</div>
+        <h2 className="how-title">
+          THREE STEPS.
+          <br />
+          ONE VIBE.
+        </h2>
+        <div className="steps-grid">
+          {STEPS.map(({ n, title, desc }) => (
+            <div key={n} className="step-card">
+              <div className="step-num">{n}</div>
+              <div className="step-divider" />
+              <div className="step-title">{title}</div>
+              <p className="step-desc">{desc}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── FEATURES ── */}
-      <section
-        style={{ position: "relative", zIndex: 1, padding: "3rem 2rem 5rem" }}
-      >
-        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-            <p
-              style={{
-                color: "#6c63ff",
-                fontFamily: "DM Sans, sans-serif",
-                fontSize: "0.85rem",
-                fontWeight: 600,
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-                marginBottom: "0.75rem",
-              }}
-            >
-              Features
-            </p>
-            <h2
-              style={{
-                fontFamily: "Clash Display, sans-serif",
-                fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
-                fontWeight: 700,
-              }}
-            >
-              Everything your ears need
-            </h2>
-          </div>
+      {/* TICKER REVERSE */}
+      <div className="ticker-wrap ticker-rev-wrap">
+        <div className="ticker-track ticker-rev">
+          {[...TICKER, ...TICKER, ...TICKER].map((t, i) => (
+            <span key={i} className="ticker-item">
+              {t} <span className="ticker-dot">◆</span>
+            </span>
+          ))}
+        </div>
+      </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-              gap: "1.25rem",
-            }}
-          >
-            {FEATURES.map(({ icon, title, desc }) => (
-              <div
-                key={title}
-                className="glass"
-                style={{
-                  borderRadius: "1.25rem",
-                  padding: "1.5rem",
-                  transition: "all 0.3s",
-                  cursor: "default",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = "rgba(108,99,255,0.3)";
-                  e.currentTarget.style.transform = "translateY(-4px)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
-                  e.currentTarget.style.transform = "translateY(0)";
-                }}
-              >
-                <div style={{ fontSize: "2rem", marginBottom: "1rem" }}>
-                  {icon}
-                </div>
-                <h3
-                  style={{
-                    fontFamily: "Clash Display, sans-serif",
-                    fontSize: "1.1rem",
-                    fontWeight: 600,
-                    marginBottom: "0.5rem",
-                    color: "#e8e8f0",
-                  }}
-                >
-                  {title}
-                </h3>
-                <p
-                  style={{
-                    color: "#6b6b80",
-                    fontFamily: "DM Sans, sans-serif",
-                    fontSize: "0.875rem",
-                    lineHeight: 1.6,
-                  }}
-                >
-                  {desc}
-                </p>
+      {/* CTA */}
+      <section className="cta-section">
+        <div className="cta-box">
+          <div className="cta-tag">FREE. NO CARD. NO TRICKS.</div>
+          <h2 className="cta-title">
+            READY TO
+            <br />
+            FIND YOUR
+            <br />
+            VIBE_
+          </h2>
+          <div className="cta-actions">
+            <button className="cta-solid" onClick={() => navigate("/signup")}>
+              CREATE ACCOUNT →
+            </button>
+            <button className="cta-ghost" onClick={() => navigate("/login")}>
+              ALREADY HAVE ONE
+            </button>
+          </div>
+        </div>
+        <div className="cta-right">
+          <div className="cta-stat-grid">
+            {[
+              { n: "7", l: "MOODS DETECTED" },
+              { n: "0s", l: "DATA STORED" },
+              { n: "∞", l: "PLAYLISTS" },
+              { n: "100%", l: "FREE" },
+            ].map(({ n, l }) => (
+              <div key={l} className="cta-stat">
+                <div className="cta-stat-n">{n}</div>
+                <div className="cta-stat-l">{l}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── CTA ── */}
-      <section
-        style={{
-          position: "relative",
-          zIndex: 1,
-          padding: "4rem 2rem 6rem",
-          textAlign: "center",
-        }}
-      >
-        <div
-          style={{
-            maxWidth: 600,
-            margin: "0 auto",
-            background:
-              "linear-gradient(135deg, rgba(108,99,255,0.12), rgba(124,58,237,0.08))",
-            border: "1px solid rgba(108,99,255,0.2)",
-            borderRadius: "2rem",
-            padding: "3rem 2rem",
-          }}
-        >
-          <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>🎭</div>
-          <h2
-            style={{
-              fontFamily: "Clash Display, sans-serif",
-              fontSize: "clamp(1.5rem, 4vw, 2rem)",
-              fontWeight: 700,
-              marginBottom: "1rem",
-            }}
+      {/* FOOTER */}
+      <footer className="land-footer">
+        <div className="footer-logo">
+          <div
+            className="nav-logo-box"
+            style={{ width: 28, height: 28, fontSize: "0.8rem" }}
           >
-            Ready to find your vibe?
-          </h2>
-          <p
-            style={{
-              color: "#6b6b80",
-              fontFamily: "DM Sans, sans-serif",
-              marginBottom: "2rem",
-              lineHeight: 1.6,
-            }}
-          >
-            Free to use. No credit card. Just music that matches how you
-            actually feel.
-          </p>
-          <button
-            className="btn-primary"
-            style={{ padding: "0.9rem 2.5rem", fontSize: "1rem" }}
-            onClick={() => navigate("/signup")}
-          >
-            Get started for free →
-          </button>
-          <p
-            style={{
-              marginTop: "1rem",
-              color: "#6b6b80",
-              fontSize: "0.8rem",
-              fontFamily: "DM Sans, sans-serif",
-            }}
-          >
-            Already have an account?{" "}
-            <button
-              onClick={() => navigate("/login")}
-              style={{
-                background: "none",
-                border: "none",
-                color: "#6c63ff",
-                cursor: "pointer",
-                fontSize: "inherit",
-              }}
-            >
-              Sign in
-            </button>
-          </p>
-        </div>
-      </section>
-
-      {/* ── FOOTER ── */}
-      <footer
-        style={{
-          borderTop: "1px solid #1e1e2e",
-          padding: "2rem",
-          textAlign: "center",
-          position: "relative",
-          zIndex: 1,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "0.75rem",
-            marginBottom: "0.75rem",
-          }}
-        >
-          <span style={{ fontSize: "1.1rem" }}>🎵</span>
-          <span
-            style={{
-              fontFamily: "Clash Display, sans-serif",
-              fontWeight: 700,
-              color: "#6b6b80",
-            }}
-          >
-            Vibezfy
+            V
+          </div>
+          <span className="nav-logo-text" style={{ fontSize: "1rem" }}>
+            VIBEZFY
           </span>
         </div>
-        <p
-          style={{
-            color: "#6b6b80",
-            fontFamily: "DM Sans, sans-serif",
-            fontSize: "0.8rem",
-          }}
-        >
-          Powered by Spotify API · face-api.js · Firebase
+        <p className="footer-note">
+          POWERED BY SPOTIFY API · FACE-API.JS · FIREBASE
         </p>
       </footer>
+
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500&display=swap');
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        .land-root {
+          background: #0A0A0A;
+          color: #F5F0E8;
+          font-family: 'Space Mono', monospace;
+          overflow-x: hidden;
+        }
+
+        /* NAV */
+        .land-nav {
+          position: sticky;
+          top: 0;
+          z-index: 100;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 1rem 2.5rem;
+          background: #0A0A0A;
+          border-bottom: 3px solid #1a1a1a;
+        }
+        .nav-logo { display: flex; align-items: center; gap: 0.75rem; }
+        .nav-logo-box {
+          width: 36px; height: 36px;
+          background: #FFE566;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 1rem; font-weight: 700; color: #0A0A0A;
+          flex-shrink: 0;
+        }
+        .nav-logo-text { font-size: 1.2rem; font-weight: 700; color: #F5F0E8; letter-spacing: 0.05em; }
+        .nav-btns { display: flex; gap: 0.75rem; align-items: center; }
+        .nav-btn-ghost {
+          padding: 0.5rem 1.1rem;
+          background: transparent;
+          border: 2px solid #333;
+          color: #888;
+          font-family: 'Space Mono', monospace;
+          font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em;
+          cursor: pointer; transition: all 0.15s;
+        }
+        .nav-btn-ghost:hover { border-color: #FFE566; color: #FFE566; }
+        .nav-btn-solid {
+          padding: 0.5rem 1.1rem;
+          background: #FFE566; border: 2px solid #FFE566;
+          color: #0A0A0A;
+          font-family: 'Space Mono', monospace;
+          font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em;
+          cursor: pointer; transition: all 0.15s;
+          box-shadow: 3px 3px 0 rgba(255,229,102,0.3);
+        }
+        .nav-btn-solid:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 rgba(255,229,102,0.4); }
+
+        /* HERO */
+        .hero {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          min-height: calc(100vh - 67px);
+          border-bottom: 3px solid #1a1a1a;
+        }
+        .hero-left {
+          padding: 4rem 3rem 4rem 2.5rem;
+          display: flex; flex-direction: column;
+          justify-content: center; gap: 2rem;
+          border-right: 3px solid #1a1a1a;
+        }
+        .hero-tag {
+          display: inline-flex; align-items: center; gap: 8px;
+          border: 2px solid #333; padding: 5px 14px;
+          font-size: 0.58rem; font-weight: 700; letter-spacing: 0.18em;
+          color: #888; align-self: flex-start;
+        }
+        .hero-tag-dot {
+          width: 6px; height: 6px; border-radius: 50%;
+          background: #FFE566;
+          animation: blink 2s ease-in-out infinite;
+        }
+        @keyframes blink { 0%,100%{opacity:.4} 50%{opacity:1} }
+        .hero-title {
+          font-size: clamp(3rem, 6vw, 6rem);
+          font-weight: 700; line-height: 1;
+          letter-spacing: -0.02em;
+        }
+        .hero-title-accent { color: #FFE566; }
+        .hero-title-stroke {
+          color: transparent;
+          -webkit-text-stroke: 2px #F5F0E8;
+        }
+        .hero-desc {
+          font-family: 'DM Sans', sans-serif;
+          font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+          color: #666; line-height: 1.7; max-width: 420px;
+        }
+        .hero-cta { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+        .cta-solid {
+          padding: 0.875rem 1.75rem;
+          background: #FFE566; border: 3px solid #FFE566;
+          color: #0A0A0A;
+          font-family: 'Space Mono', monospace;
+          font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em;
+          cursor: pointer; transition: all 0.15s;
+          box-shadow: 4px 4px 0 rgba(255,229,102,0.25);
+        }
+        .cta-solid:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 rgba(255,229,102,0.35); }
+        .cta-solid:active { transform: translate(1px,1px); box-shadow: 2px 2px 0 rgba(255,229,102,0.2); }
+
+        .cta-ghost {
+          padding: 0.875rem 1.75rem;
+          background: transparent; border: 3px solid #333;
+          color: #888;
+          font-family: 'Space Mono', monospace;
+          font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em;
+          cursor: pointer; transition: all 0.15s;
+        }
+        .cta-ghost:hover { border-color: #F5F0E8; color: #F5F0E8; }
+
+        /* HERO RIGHT */
+        .hero-right {
+          padding: 4rem 2.5rem 4rem 3rem;
+          display: flex; align-items: center; justify-content: center;
+          background: #0d0d0d;
+        }
+        .mood-card {
+          width: 100%; max-width: 380px;
+          border: 3px solid #2a2a2a;
+          background: #111;
+          display: flex; flex-direction: column; gap: 0;
+          box-shadow: 8px 8px 0 #FFE56620;
+        }
+        .mood-card-header {
+          display: flex; align-items: center; gap: 8px;
+          padding: 0.75rem 1rem;
+          border-bottom: 2px solid #1a1a1a;
+          background: #0A0A0A;
+        }
+        .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #FF6666; animation: blink 1.5s ease-in-out infinite; }
+        .live-text { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.2em; color: #555; }
+
+        /* Viewfinder */
+        .viewfinder {
+          position: relative;
+          height: 180px;
+          background: #060606;
+          border-bottom: 2px solid #1a1a1a;
+          overflow: hidden;
+          display: flex; align-items: center; justify-content: center;
+        }
+        .vf-corner {
+          position: absolute; width: 18px; height: 18px;
+        }
+        .vf-tl { top: 10px; left: 10px; border-top: 2px solid #FFE566; border-left: 2px solid #FFE566; }
+        .vf-tr { top: 10px; right: 10px; border-top: 2px solid #FFE566; border-right: 2px solid #FFE566; }
+        .vf-bl { bottom: 10px; left: 10px; border-bottom: 2px solid #FFE566; border-left: 2px solid #FFE566; }
+        .vf-br { bottom: 10px; right: 10px; border-bottom: 2px solid #FFE566; border-right: 2px solid #FFE566; }
+        .vf-scanline {
+          position: absolute; width: 100%; height: 1px;
+          background: rgba(255,229,102,0.15);
+          animation: scan 3s linear infinite;
+        }
+        @keyframes scan { 0%{top:0%} 100%{top:100%} }
+        .vf-face {
+          display: flex; flex-direction: column;
+          align-items: center; gap: 12px; z-index: 1;
+        }
+        .vf-face-circle {
+          width: 56px; height: 56px; border-radius: 50%;
+          border: 2px solid #333;
+          background: radial-gradient(circle at 35% 35%, #1a1a1a, #0d0d0d);
+          box-shadow: 0 0 20px rgba(255,229,102,0.1);
+        }
+        .vf-face-bar { width: 80px; height: 2px; background: #222; border-radius: 1px; }
+        .vf-face-bar.short { width: 50px; }
+
+        /* Detected mood */
+        .detected-row {
+          display: flex; align-items: center; gap: 1rem;
+          padding: 0.875rem 1rem;
+          border-bottom: 2px solid #1a1a1a;
+          background: color-mix(in srgb, var(--mc) 8%, #111);
+          transition: background 0.4s;
+        }
+        .detected-label { font-size: 0.52rem; font-weight: 700; letter-spacing: 0.18em; color: #555; flex-shrink: 0; }
+        .detected-mood {
+          font-size: 1rem; font-weight: 700; letter-spacing: 0.05em;
+          color: var(--mc); transition: color 0.4s; flex: 1;
+        }
+        .detected-bars { display: flex; align-items: flex-end; gap: 2px; flex-shrink: 0; }
+        .det-bar {
+          width: 3px; border-radius: 1px;
+          animation: wave 1s ease-in-out infinite alternate;
+        }
+        @keyframes wave { from{opacity:.4;transform:scaleY(.6)} to{opacity:1;transform:scaleY(1)} }
+
+        /* Hero mood grid */
+        .hero-mood-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          border-top: 0;
+        }
+        .hero-mood-chip {
+          padding: 0.6rem 0.5rem;
+          border-right: 2px solid #1a1a1a;
+          border-top: 2px solid #1a1a1a;
+          font-size: 0.52rem; font-weight: 700; letter-spacing: 0.1em;
+          color: #444; text-align: center;
+          transition: all 0.3s;
+          cursor: default;
+        }
+        .hero-mood-chip:nth-child(3n) { border-right: none; }
+        .hero-mood-chip.active {
+          color: var(--hc);
+          background: color-mix(in srgb, var(--hc) 8%, #111);
+        }
+
+        /* TICKER */
+        .ticker-wrap {
+          background: #FFE566;
+          overflow: hidden; white-space: nowrap;
+          padding: 9px 0;
+          border-top: 3px solid #0A0A0A;
+          border-bottom: 3px solid #0A0A0A;
+        }
+        .ticker-rev-wrap { background: #0A0A0A; }
+        .ticker-track { display: inline-flex; animation: tickerMove 22s linear infinite; }
+        .ticker-rev { animation: tickerMoveRev 18s linear infinite; }
+        .ticker-item {
+          color: #0A0A0A;
+          font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em;
+          padding: 0 1.5rem;
+          display: inline-flex; align-items: center; gap: 1.5rem;
+        }
+        .ticker-rev-wrap .ticker-item { color: #F5F0E8; }
+        .ticker-dot { font-size: 0.5rem; }
+        @keyframes tickerMove { from{transform:translateX(0)} to{transform:translateX(-33.333%)} }
+        @keyframes tickerMoveRev { from{transform:translateX(-33.333%)} to{transform:translateX(0)} }
+
+        /* HOW IT WORKS */
+        .how-section {
+          padding: 5rem 2.5rem;
+          border-bottom: 3px solid #1a1a1a;
+        }
+        .how-label {
+          font-size: 0.58rem; font-weight: 700; letter-spacing: 0.25em;
+          color: #FFE566; margin-bottom: 1rem;
+        }
+        .how-title {
+          font-size: clamp(2rem, 5vw, 4rem);
+          font-weight: 700; line-height: 1; letter-spacing: -0.02em;
+          margin-bottom: 3.5rem;
+        }
+        .steps-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 0;
+          border: 3px solid #1a1a1a;
+        }
+        .step-card {
+          padding: 2rem;
+          border-right: 3px solid #1a1a1a;
+          display: flex; flex-direction: column; gap: 1rem;
+          transition: background 0.2s;
+        }
+        .step-card:last-child { border-right: none; }
+        .step-card:hover { background: #111; }
+        .step-num { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.2em; color: #FFE566; }
+        .step-divider { width: 32px; height: 3px; background: #FFE566; }
+        .step-title { font-size: 1rem; font-weight: 700; letter-spacing: 0.05em; }
+        .step-desc { font-family: 'DM Sans', sans-serif; font-size: 0.875rem; color: #666; line-height: 1.7; }
+
+        /* CTA */
+        .cta-section {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          border-bottom: 3px solid #1a1a1a;
+        }
+        .cta-box {
+          padding: 5rem 2.5rem;
+          border-right: 3px solid #FFE566;
+          display: flex; flex-direction: column; gap: 2rem;
+          background: #0d0d0d;
+        }
+        .cta-tag {
+          font-size: 0.55rem; font-weight: 700; letter-spacing: 0.2em; color: #555;
+        }
+        .cta-title {
+          font-size: clamp(2.5rem, 5vw, 4.5rem);
+          font-weight: 700; line-height: 1; letter-spacing: -0.02em;
+        }
+        .cta-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+        .cta-right {
+          padding: 5rem 2.5rem;
+          display: flex; align-items: center; justify-content: center;
+        }
+        .cta-stat-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 0;
+          border: 3px solid #1a1a1a;
+          width: 100%; max-width: 320px;
+        }
+        .cta-stat {
+          padding: 2rem;
+          border-right: 3px solid #1a1a1a;
+          border-bottom: 3px solid #1a1a1a;
+          display: flex; flex-direction: column; gap: 0.5rem;
+        }
+        .cta-stat:nth-child(2n) { border-right: none; }
+        .cta-stat:nth-last-child(-n+2) { border-bottom: none; }
+        .cta-stat-n { font-size: 2.5rem; font-weight: 700; color: #FFE566; line-height: 1; }
+        .cta-stat-l { font-size: 0.52rem; font-weight: 700; letter-spacing: 0.15em; color: #555; }
+
+        /* FOOTER */
+        .land-footer {
+          padding: 1.5rem 2.5rem;
+          border-top: 3px solid #1a1a1a;
+          display: flex; align-items: center; justify-content: space-between;
+          flex-wrap: wrap; gap: 1rem;
+        }
+        .footer-logo { display: flex; align-items: center; gap: 0.75rem; }
+        .footer-note { font-size: 0.52rem; font-weight: 700; letter-spacing: 0.15em; color: #333; }
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+          .land-nav { padding: 1rem 1.5rem; }
+          .nav-btn-ghost { display: none; }
+
+          .hero { grid-template-columns: 1fr; min-height: auto; }
+          .hero-left { padding: 2.5rem 1.5rem; border-right: none; border-bottom: 3px solid #1a1a1a; gap: 1.5rem; }
+          .hero-right { padding: 2rem 1.5rem; }
+
+          .how-section { padding: 3rem 1.5rem; }
+          .steps-grid { grid-template-columns: 1fr; }
+          .step-card { border-right: none; border-bottom: 3px solid #1a1a1a; }
+          .step-card:last-child { border-bottom: none; }
+
+          .cta-section { grid-template-columns: 1fr; }
+          .cta-box { padding: 3rem 1.5rem; border-right: none; border-bottom: 3px solid #FFE566; }
+          .cta-right { padding: 3rem 1.5rem; }
+
+          .land-footer { padding: 1.5rem; flex-direction: column; align-items: flex-start; }
+        }
+
+        @media (max-width: 480px) {
+          .hero-title { font-size: 3rem; }
+          .cta-title { font-size: 2.5rem; }
+          .nav-logo-text { font-size: 1rem; }
+        }
+      `}</style>
     </div>
   );
 }
