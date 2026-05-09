@@ -151,447 +151,94 @@ export default function MoodDetector({ onClose }) {
   const moodMeta = mood ? getMoodMeta(mood.mood) : null;
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 200,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "rgba(0,0,0,0.85)",
-        backdropFilter: "blur(12px)",
-      }}
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div
-        style={{
-          background: "#111118",
-          border: "1px solid #1e1e2e",
-          borderRadius: "1.5rem",
-          padding: "2rem",
-          width: "90%",
-          maxWidth: 520,
-          position: "relative",
-          boxShadow: "0 40px 80px rgba(0,0,0,0.6)",
-        }}
-      >
-        {/* Close */}
+    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+      <div className="bg-white brutal-border shadow-[12px_12px_0px_0px_rgba(108,99,255,1)] w-full max-w-lg p-8 relative">
+        {/* CLOSE BUTTON */}
         <button
           onClick={onClose}
-          style={{
-            position: "absolute",
-            top: "1rem",
-            right: "1rem",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            color: "#6b6b80",
-            display: "flex",
-          }}
+          className="absolute -top-4 -right-4 brutal-btn bg-white px-2 py-2"
         >
-          <X size={20} />
+          <X size={24} />
         </button>
 
-        <h2
-          style={{
-            fontFamily: "Clash Display, sans-serif",
-            fontSize: "1.5rem",
-            fontWeight: 700,
-            color: "#e8e8f0",
-            marginBottom: "0.5rem",
-          }}
-        >
-          Detect Your Vibe 🎭
-        </h2>
-        <p
-          style={{
-            color: "#6b6b80",
-            fontFamily: "DM Sans, sans-serif",
-            marginBottom: "1.5rem",
-            fontSize: "0.9rem",
-          }}
-        >
-          Let AI read your mood and play the perfect playlist
-        </p>
+        <div className="mb-6 border-b-4 border-black pb-4">
+          <h2 className="text-4xl font-black uppercase italic tracking-tighter">
+            Vibe_Scan_01
+          </h2>
+          <p className="font-bold text-xs uppercase text-purple-600">
+            Calibration Protocol Active
+          </p>
+        </div>
 
-        {/* ── INIT ── */}
-        {state === STATES.INIT && (
-          <div style={{ textAlign: "center", padding: "2rem 0" }}>
-            <div style={{ fontSize: "4rem", marginBottom: "1.5rem" }}>🎭</div>
-            <p
-              style={{
-                color: "#6b6b80",
-                fontFamily: "DM Sans, sans-serif",
-                marginBottom: "1.5rem",
-                fontSize: "0.9rem",
-              }}
-            >
-              We'll use your front camera for 3 seconds to detect your mood. No
-              data is saved.
-            </p>
-            <button
-              className="btn-primary"
-              onClick={startDetection}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "0.5rem",
-              }}
-            >
-              <Camera size={18} />
-              Start Vibe Detection
-            </button>
-          </div>
-        )}
-
-        {/* ── LOADING MODELS ── */}
-        {state === STATES.LOADING_MODELS && (
-          <div style={{ textAlign: "center", padding: "3rem 0" }}>
-            <Loader
-              size={40}
-              color="#6c63ff"
-              style={{
-                animation: "spin 1s linear infinite",
-                margin: "0 auto 1rem",
-              }}
+        {/* CAMERA FEED AREA */}
+        <div className="bg-black brutal-border aspect-video mb-6 relative overflow-hidden flex items-center justify-center">
+          {state === STATES.CAMERA || state === STATES.DETECTING ? (
+            <video
+              ref={videoRef}
+              autoPlay
+              muted
+              className="w-full h-full object-cover scale-x-[-1]"
             />
-            <p style={{ color: "#6b6b80", fontFamily: "DM Sans, sans-serif" }}>
-              Loading AI models...
-            </p>
-          </div>
-        )}
-
-        {/* ── CAMERA + DETECTING ── */}
-        {(state === STATES.CAMERA || state === STATES.DETECTING) && (
-          <div>
-            <div
-              style={{
-                position: "relative",
-                borderRadius: "1rem",
-                overflow: "hidden",
-                background: "#000",
-                marginBottom: "1rem",
-              }}
-            >
-              <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                muted
-                style={{
-                  width: "100%",
-                  display: "block",
-                  transform: "scaleX(-1)",
-                }}
-              />
-              {state === STATES.CAMERA && countdown > 0 && (
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    background: "rgba(0,0,0,0.4)",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 80,
-                      height: 80,
-                      borderRadius: "50%",
-                      background: "rgba(108,99,255,0.9)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontFamily: "Clash Display, sans-serif",
-                      fontSize: "2.5rem",
-                      fontWeight: 700,
-                      color: "white",
-                      boxShadow: "0 0 40px rgba(108,99,255,0.6)",
-                    }}
-                  >
-                    {countdown}
-                  </div>
-                </div>
-              )}
-              {state === STATES.DETECTING && (
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    background: "rgba(0,0,0,0.6)",
-                    gap: "1rem",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: 4,
-                      alignItems: "flex-end",
-                      height: 32,
-                    }}
-                  >
-                    {[0, 1, 2, 3, 4].map((i) => (
-                      <div
-                        key={i}
-                        className="waveform-bar"
-                        style={{
-                          height: `${12 + (i % 3) * 8}px`,
-                          animationDelay: `${i * 0.1}s`,
-                        }}
-                      />
-                    ))}
-                  </div>
-                  <p
-                    style={{
-                      color: "white",
-                      fontFamily: "DM Sans, sans-serif",
-                    }}
-                  >
-                    Analyzing your vibe...
-                  </p>
-                </div>
-              )}
-            </div>
-            <p
-              style={{
-                color: "#6b6b80",
-                textAlign: "center",
-                fontSize: "0.85rem",
-                fontFamily: "DM Sans, sans-serif",
-              }}
-            >
-              {state === STATES.CAMERA
-                ? `Detecting in ${countdown}...`
-                : "Reading your expressions..."}
-            </p>
-          </div>
-        )}
-
-        {/* ── RESULT ── */}
-        {(state === STATES.RESULT || state === STATES.LOADING_PLAYLIST) &&
-          mood && (
-            <div>
-              {/* Mood display */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "1rem",
-                  background: `${moodMeta.color}15`,
-                  border: `1px solid ${moodMeta.color}30`,
-                  borderRadius: "1rem",
-                  padding: "1rem",
-                  marginBottom: "1.5rem",
-                }}
-              >
-                <div style={{ fontSize: "3rem" }}>{moodMeta.emoji}</div>
-                <div>
-                  <p
-                    style={{
-                      fontFamily: "Clash Display, sans-serif",
-                      fontSize: "1.25rem",
-                      fontWeight: 700,
-                      color: moodMeta.color,
-                    }}
-                  >
-                    {moodMeta.label}
-                  </p>
-                  <p
-                    style={{
-                      color: "#6b6b80",
-                      fontSize: "0.85rem",
-                      fontFamily: "DM Sans, sans-serif",
-                    }}
-                  >
-                    {Math.round(mood.confidence * 100)}% confidence
-                  </p>
-                </div>
-
-                {/* Mini expression bars */}
-                <div
-                  style={{
-                    marginLeft: "auto",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 4,
-                    minWidth: 120,
-                  }}
-                >
-                  {Object.entries(mood.all)
-                    .sort((a, b) => b[1] - a[1])
-                    .slice(0, 4)
-                    .map(([expr, val]) => (
-                      <div
-                        key={expr}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 6,
-                        }}
-                      >
-                        <span
-                          style={{
-                            color: "#6b6b80",
-                            fontSize: "0.7rem",
-                            width: 56,
-                            textAlign: "right",
-                            fontFamily: "DM Sans, sans-serif",
-                            textTransform: "capitalize",
-                          }}
-                        >
-                          {expr}
-                        </span>
-                        <div
-                          style={{
-                            flex: 1,
-                            height: 4,
-                            background: "#1e1e2e",
-                            borderRadius: 2,
-                          }}
-                        >
-                          <div
-                            style={{
-                              width: `${val * 100}%`,
-                              height: "100%",
-                              background: getMoodMeta(expr).color,
-                              borderRadius: 2,
-                              transition: "width 0.5s",
-                            }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              </div>
-
-              {/* Playlist */}
-              {state === STATES.LOADING_PLAYLIST && (
-                <div
-                  style={{
-                    textAlign: "center",
-                    padding: "1rem",
-                    color: "#6b6b80",
-                    fontFamily: "DM Sans, sans-serif",
-                    fontSize: "0.9rem",
-                  }}
-                >
-                  Finding the perfect playlist...
-                </div>
-              )}
-
-              {state === STATES.RESULT && playlist && (
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "1rem",
-                    background: "#16161f",
-                    borderRadius: "1rem",
-                    padding: "1rem",
-                    marginBottom: "1.5rem",
-                  }}
-                >
-                  <img
-                    src={playlist.images?.[0]?.url}
-                    alt={playlist.name}
-                    style={{
-                      width: 56,
-                      height: 56,
-                      borderRadius: "0.5rem",
-                      objectFit: "cover",
-                    }}
-                  />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <p
-                      style={{
-                        fontFamily: "DM Sans, sans-serif",
-                        fontWeight: 500,
-                        color: "#e8e8f0",
-                        marginBottom: 4,
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {playlist.name}
-                    </p>
-                    <p
-                      style={{
-                        color: "#6b6b80",
-                        fontSize: "0.8rem",
-                        fontFamily: "DM Sans, sans-serif",
-                      }}
-                    >
-                      {playlist.tracks?.total} tracks · {moodMeta.label}{" "}
-                      playlist
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              <div style={{ display: "flex", gap: "0.75rem" }}>
-                {playlist && (
-                  <button
-                    className="btn-primary"
-                    onClick={handlePlayPlaylist}
-                    style={{ flex: 1 }}
-                  >
-                    Play This Vibe ▶
-                  </button>
-                )}
-                <button
-                  className="btn-ghost"
-                  onClick={reset}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                  }}
-                >
-                  <RefreshCw size={16} />
-                  Retry
-                </button>
-              </div>
+          ) : (
+            <div className="text-white text-center p-8">
+              <Camera size={48} className="mx-auto mb-4" />
+              <p className="font-black uppercase text-sm">
+                Waiting_For_Input_Signal
+              </p>
             </div>
           )}
 
-        {/* ── ERROR ── */}
-        {state === STATES.ERROR && (
-          <div style={{ textAlign: "center", padding: "1.5rem 0" }}>
-            <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>😕</div>
-            <p
-              style={{
-                color: "#f87171",
-                fontFamily: "DM Sans, sans-serif",
-                marginBottom: "1.5rem",
-                fontSize: "0.9rem",
-              }}
-            >
-              {error}
-            </p>
+          {/* Scanning Overlay Effect */}
+          <div className="absolute inset-0 pointer-events-none border-[1px] border-white/20 opacity-30 bg-[linear-gradient(transparent_0%,rgba(255,255,255,0.05)_50%,transparent_100%)] bg-[length:100%_4px]" />
+
+          {countdown > 0 && state === STATES.CAMERA && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+              <span className="text-8xl font-black text-amber-400 drop-shadow-2xl">
+                {countdown}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* CONTROLS */}
+        <div className="flex flex-col gap-4">
+          {state === STATES.INIT && (
             <button
-              className="btn-primary"
-              onClick={reset}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "0.5rem",
-              }}
+              onClick={startDetection}
+              className="brutal-btn bg-purple-500 text-white text-xl py-4"
             >
-              <RefreshCw size={16} />
-              Try Again
+              INITIATE_FACIAL_SCAN
             </button>
-          </div>
-        )}
+          )}
+
+          {state === STATES.RESULT && mood && (
+            <div className="space-y-4">
+              <div className="bg-amber-400 brutal-border p-4 flex justify-between items-center">
+                <span className="font-black text-2xl uppercase italic">
+                  {mood.mood}
+                </span>
+                <span className="font-mono text-sm">
+                  CONF: {Math.round(mood.confidence * 100)}%
+                </span>
+              </div>
+              <button
+                onClick={handlePlayPlaylist}
+                className="brutal-btn bg-black text-white w-full py-4 text-xl"
+              >
+                LOAD_MATCHING_VIBE →
+              </button>
+            </div>
+          )}
+
+          {state === STATES.ERROR && (
+            <div className="bg-red-400 brutal-border p-4 text-center">
+              <p className="font-black uppercase mb-4">{error}</p>
+              <button onClick={reset} className="brutal-btn bg-white w-full">
+                RETRY_SCAN
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

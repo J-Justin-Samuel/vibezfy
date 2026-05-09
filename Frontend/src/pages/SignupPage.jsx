@@ -45,10 +45,11 @@ export default function SignupPage() {
         style={{
           height: "70px",
           borderBottom: "4px solid #0E0D0B",
-          padding: "0 2rem",
+          padding: "0 1.5rem",
           display: "flex",
           alignItems: "center",
           background: "white",
+          flexShrink: 0,
         }}
       >
         <Link
@@ -57,7 +58,7 @@ export default function SignupPage() {
             textDecoration: "none",
             color: "#0E0D0B",
             fontWeight: 800,
-            fontSize: "1.5rem",
+            fontSize: "1.3rem",
           }}
         >
           VIBEZFY.
@@ -68,57 +69,33 @@ export default function SignupPage() {
         style={{
           flex: 1,
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
         }}
       >
-        {/* Left Content (Hidden on small mobile for focus) */}
+        {/* Left Section - Stacks on top in mobile or hidden */}
         <section
+          className="max-md:hidden"
           style={{
-            padding: "3rem 2rem",
+            padding: "2rem",
             borderRight: "4px solid #0E0D0B",
             background: "#E8A838",
             display: "flex",
-            flexDirection: "column",
+            alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <h2
-            style={{
-              fontSize: "3.5rem",
-              fontWeight: 900,
-              lineHeight: 1,
-              textTransform: "uppercase",
-            }}
+          <div
+            className="brutal-card"
+            style={{ padding: "2rem", transform: "rotate(-2deg)" }}
           >
-            Start <br /> Vibeing.
-          </h2>
-          <ul style={{ listStyle: "none", marginTop: "2rem", padding: 0 }}>
-            {[
-              "01 AI MOOD READING",
-              "02 SPOTIFY CONNECT",
-              "03 PRIVACY INSIDE",
-            ].map((perk) => (
-              <li
-                key={perk}
-                className="brutal-card"
-                style={{
-                  padding: "10px",
-                  marginBottom: "10px",
-                  fontWeight: 800,
-                  background: "white",
-                  width: "fit-content",
-                }}
-              >
-                {perk}
-              </li>
-            ))}
-          </ul>
+            <h2 style={{ fontSize: "2.5rem", fontWeight: 900 }}>JOIN_VIBZ</h2>
+          </div>
         </section>
 
-        {/* Signup Form */}
+        {/* Right Section - Form */}
         <section
           style={{
-            padding: "2rem",
+            padding: "2rem 1rem",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -128,16 +105,16 @@ export default function SignupPage() {
             <form
               onSubmit={handleSubmit}
               className="brutal-card"
-              style={{ padding: "2rem" }}
+              style={{ padding: "1.5rem" }}
             >
               <h3
                 style={{
-                  fontSize: "1.5rem",
+                  fontSize: "1.2rem",
                   fontWeight: 800,
-                  marginBottom: "1.5rem",
+                  marginBottom: "1rem",
                 }}
               >
-                CREATE_USER_01
+                REGISTER_NEW
               </h3>
 
               <input
@@ -150,7 +127,7 @@ export default function SignupPage() {
               <input
                 name="email"
                 type="email"
-                placeholder="EMAIL_ADDR"
+                placeholder="EMAIL"
                 required
                 onChange={handleChange}
                 style={inputStyle}
@@ -158,7 +135,7 @@ export default function SignupPage() {
               <input
                 name="password"
                 type="password"
-                placeholder="PASSWORD"
+                placeholder="PASS"
                 required
                 onChange={handleChange}
                 style={inputStyle}
@@ -166,44 +143,30 @@ export default function SignupPage() {
               <input
                 name="confirm"
                 type="password"
-                placeholder="CONFIRM_PASS"
+                placeholder="CONFIRM"
                 required
                 onChange={handleChange}
                 style={inputStyle}
               />
 
-              {error && (
-                <div
-                  style={{
-                    background: "#F87171",
-                    border: "3px solid #0E0D0B",
-                    padding: "10px",
-                    marginBottom: "1rem",
-                    fontWeight: 800,
-                  }}
-                >
-                  {error}
-                </div>
-              )}
-
               <button
                 className="brutal-btn"
-                style={{ width: "100%", padding: "15px", fontSize: "1.1rem" }}
-                disabled={loading}
+                style={{ width: "100%", padding: "15px", marginTop: "0.5rem" }}
               >
-                {loading ? "CREATING..." : "JOIN THE VIBE →"}
+                SIGN_UP
               </button>
 
               <p
                 style={{
-                  marginTop: "1.5rem",
+                  marginTop: "1rem",
                   fontWeight: 700,
                   textAlign: "center",
+                  fontSize: "0.85rem",
                 }}
               >
                 MEMBER?{" "}
                 <Link to="/login" style={{ color: "#C084FC" }}>
-                  SIGN_IN
+                  LOG_IN
                 </Link>
               </p>
             </form>
@@ -216,10 +179,10 @@ export default function SignupPage() {
 
 const inputStyle = {
   width: "100%",
-  padding: "12px",
+  padding: "10px",
   border: "3px solid #0E0D0B",
-  marginBottom: "1rem",
+  marginBottom: "0.8rem",
   fontWeight: 700,
   outline: "none",
-  background: "white",
+  fontSize: "0.9rem",
 };

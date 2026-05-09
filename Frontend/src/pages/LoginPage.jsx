@@ -29,22 +29,21 @@ export default function LoginPage() {
   return (
     <div
       style={{
-        height: "100vh",
+        minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
         background: "#F0EBE0",
-        overflow: "hidden",
       }}
     >
-      {/* Navbar for consistency */}
       <nav
         style={{
           height: "70px",
           borderBottom: "4px solid #0E0D0B",
-          padding: "0 2rem",
+          padding: "0 1.5rem",
           display: "flex",
           alignItems: "center",
           background: "white",
+          flexShrink: 0,
         }}
       >
         <Link
@@ -53,7 +52,7 @@ export default function LoginPage() {
             textDecoration: "none",
             color: "#0E0D0B",
             fontWeight: 800,
-            fontSize: "1.5rem",
+            fontSize: "1.3rem",
           }}
         >
           VIBEZFY.
@@ -64,38 +63,35 @@ export default function LoginPage() {
         style={{
           flex: 1,
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-          overflowY: "auto",
+          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
         }}
       >
-        {/* Left Visual Panel */}
+        {/* Left Panel - Hidden on mobile to save space, or shown as a small header */}
         <section
+          className="max-md:hidden"
           style={{
-            padding: "4rem 2rem",
+            padding: "2rem",
             borderRight: "4px solid #0E0D0B",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
             background: "#C084FC",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
           <div
             className="brutal-card"
             style={{ padding: "2rem", transform: "rotate(-2deg)" }}
           >
-            <h2 style={{ fontSize: "3rem", fontWeight: 900, lineHeight: 1 }}>
-              WELCOME <br /> BACK.
+            <h2 style={{ fontSize: "2.5rem", fontWeight: 900 }}>
+              WELCOME_BACK
             </h2>
-            <p style={{ fontWeight: 700, marginTop: "1rem" }}>
-              Your playlists are waiting for your face.
-            </p>
           </div>
         </section>
 
-        {/* Right Form Panel */}
+        {/* Right Panel - Centered Form */}
         <section
           style={{
-            padding: "2rem",
+            padding: "2rem 1rem",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -105,16 +101,16 @@ export default function LoginPage() {
             <form
               onSubmit={handleSubmit}
               className="brutal-card"
-              style={{ padding: "2rem" }}
+              style={{ padding: "1.5rem" }}
             >
               <h3
                 style={{
-                  fontSize: "1.5rem",
+                  fontSize: "1.2rem",
                   fontWeight: 800,
                   marginBottom: "1.5rem",
                 }}
               >
-                LOGIN_TO_VIBE
+                SIGN_IN_PROMPT
               </h3>
 
               <div style={{ marginBottom: "1rem" }}>
@@ -122,18 +118,17 @@ export default function LoginPage() {
                   style={{
                     display: "block",
                     fontWeight: 800,
-                    fontSize: "0.8rem",
+                    fontSize: "0.7rem",
                     marginBottom: "5px",
                   }}
                 >
-                  EMAIL_ADDR
+                  EMAIL
                 </label>
                 <input
                   name="email"
                   type="email"
                   required
-                  className="brutal-input"
-                  placeholder="name@email.com"
+                  placeholder="user@vibe.com"
                   onChange={handleChange}
                   style={{
                     width: "100%",
@@ -150,7 +145,7 @@ export default function LoginPage() {
                   style={{
                     display: "block",
                     fontWeight: 800,
-                    fontSize: "0.8rem",
+                    fontSize: "0.7rem",
                     marginBottom: "5px",
                   }}
                 >
@@ -172,27 +167,11 @@ export default function LoginPage() {
                 />
               </div>
 
-              {error && (
-                <div
-                  style={{
-                    background: "#F87171",
-                    border: "2px solid #0E0D0B",
-                    padding: "10px",
-                    marginBottom: "1rem",
-                    fontWeight: 700,
-                    fontSize: "0.8rem",
-                  }}
-                >
-                  {error}
-                </div>
-              )}
-
               <button
                 className="brutal-btn"
                 style={{ width: "100%", padding: "15px", marginBottom: "1rem" }}
-                disabled={loading}
               >
-                {loading ? "AUTHENTICATING..." : "SIGN IN →"}
+                LOGIN
               </button>
 
               <button
@@ -201,20 +180,21 @@ export default function LoginPage() {
                 className="brutal-btn"
                 style={{
                   width: "100%",
-                  padding: "15px",
+                  padding: "12px",
                   background: "white",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   gap: "10px",
+                  fontSize: "0.9rem",
                 }}
               >
                 <img
                   src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg"
-                  width="18"
-                  alt="G"
+                  width="16"
+                  alt=""
                 />
-                GOOGLE LOGIN
+                LOGIN_WITH_GOOGLE
               </button>
 
               <p
@@ -222,12 +202,12 @@ export default function LoginPage() {
                   marginTop: "1.5rem",
                   fontWeight: 700,
                   textAlign: "center",
-                  fontSize: "0.9rem",
+                  fontSize: "0.85rem",
                 }}
               >
-                NEW HERE?{" "}
+                NO_ACCOUNT?{" "}
                 <Link to="/signup" style={{ color: "#E8A838" }}>
-                  CREATE_ACCOUNT
+                  JOIN_US
                 </Link>
               </p>
             </form>

@@ -10,7 +10,7 @@ import {
 import SongCard from "../components/Home/SongCard";
 import PlaylistCard from "../components/Home/PlaylistCard";
 import MoodDetector from "../components/MoodDetector/MoodDetector";
-import { Sparkles, LogOut } from "lucide-react";
+import { Sparkles, LogOut, Zap } from "lucide-react";
 
 export default function HomePage() {
   const { user } = useAuth();
@@ -86,263 +86,94 @@ export default function HomePage() {
   );
 
   return (
-    <div style={{ padding: "2rem", maxWidth: 1400, margin: "0 auto" }}>
-      {/* Background orbs */}
-      <div
-        className="orb"
-        style={{
-          width: 400,
-          height: 400,
-          background: "rgba(108,99,255,0.08)",
-          top: -100,
-          right: -100,
-        }}
-      />
-      <div
-        className="orb"
-        style={{
-          width: 300,
-          height: 300,
-          background: "rgba(124,58,237,0.06)",
-          bottom: 200,
-          left: -100,
-        }}
-      />
-
-      {/* Header */}
-      <div style={{ marginBottom: "2.5rem", position: "relative", zIndex: 1 }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "flex-start",
-            justifyContent: "space-between",
-            gap: "1rem",
-            flexWrap: "wrap",
-            marginBottom: "1.5rem",
-          }}
-        >
-          <div>
-            <p
-              style={{
-                color: "#6b6b80",
-                fontFamily: "DM Sans, sans-serif",
-                marginBottom: 4,
-              }}
-            >
-              {greeting}
-            </p>
-            <h1
-              style={{
-                fontFamily: "Clash Display, sans-serif",
-                fontSize: "2.5rem",
-                fontWeight: 700,
-                color: "#e8e8f0",
-              }}
-            >
-              {firstName} 👋
-            </h1>
+    <div className="min-h-screen bg-[#F0EBE0] text-black font-sans p-4 md:p-8">
+      {/* HEADER SECTION */}
+      <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+        <div>
+          <div className="bg-amber-400 brutal-border px-3 py-1 inline-block mb-2 text-xs font-black uppercase">
+            {greeting}
           </div>
-          {/* Account / Logout button */}
-          <button
-            onClick={() => navigate("/logout")}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              padding: "0.6rem 1.1rem",
-              borderRadius: "0.75rem",
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid #1e1e2e",
-              color: "#6b6b80",
-              fontFamily: "DM Sans, sans-serif",
-              fontSize: "0.85rem",
-              cursor: "pointer",
-              transition: "all 0.2s",
-              flexShrink: 0,
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "rgba(248,113,113,0.4)";
-              e.currentTarget.style.color = "#f87171";
-              e.currentTarget.style.background = "rgba(248,113,113,0.06)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = "#1e1e2e";
-              e.currentTarget.style.color = "#6b6b80";
-              e.currentTarget.style.background = "rgba(255,255,255,0.04)";
-            }}
-          >
-            <LogOut size={15} />
-            Sign out
-          </button>
+          <h1 className="text-5xl md:text-7xl font-black tracking-tighter uppercase leading-none">
+            {firstName}
+            <span className="text-purple-500">.</span>
+          </h1>
         </div>
 
-        {/* Spotify connect banner */}
-        {!isConnected && (
-          <div
-            className="glass"
-            style={{
-              borderRadius: "1rem",
-              padding: "1.25rem 1.5rem",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: "1rem",
-              marginBottom: "1.5rem",
-            }}
-          >
-            <div>
-              <p
-                style={{
-                  fontFamily: "Clash Display, sans-serif",
-                  fontWeight: 600,
-                  color: "#e8e8f0",
-                  marginBottom: 4,
-                }}
-              >
-                Connect Spotify to unlock everything
-              </p>
-              <p
-                style={{
-                  color: "#6b6b80",
-                  fontSize: "0.875rem",
-                  fontFamily: "DM Sans, sans-serif",
-                }}
-              >
-                Search, play music and let AI detect your vibe
-              </p>
-            </div>
-            <button
-              className="btn-primary"
-              style={{ whiteSpace: "nowrap" }}
-              onClick={initiateSpotifyLogin}
-            >
-              Connect Spotify
-            </button>
-          </div>
-        )}
-
-        {/* Mood detect button */}
         <button
-          onClick={() => setShowMood(true)}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.75rem",
-            background: "linear-gradient(135deg, #6c63ff20, #7c3aed15)",
-            border: "1px solid rgba(108,99,255,0.4)",
-            borderRadius: "1rem",
-            padding: "1rem 1.5rem",
-            cursor: "pointer",
-            transition: "all 0.3s",
-            fontFamily: "DM Sans, sans-serif",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = "#6c63ff";
-            e.currentTarget.style.boxShadow = "0 0 30px rgba(108,99,255,0.2)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = "rgba(108,99,255,0.4)";
-            e.currentTarget.style.boxShadow = "none";
-          }}
+          onClick={() => navigate("/logout")}
+          className="brutal-btn bg-red-400 flex items-center gap-2 text-sm"
         >
-          <div className="mood-active" style={{ fontSize: "2rem" }}>
-            🎭
-          </div>
-          <div style={{ textAlign: "left" }}>
-            <p
-              style={{
-                fontFamily: "Clash Display, sans-serif",
-                fontWeight: 600,
-                color: "#e8e8f0",
-                fontSize: "1rem",
-                marginBottom: 2,
-              }}
-            >
-              Detect My Vibe
-            </p>
-            <p style={{ color: "#6b6b80", fontSize: "0.8rem" }}>
-              Point camera → AI reads mood → Perfect playlist
-            </p>
-          </div>
-          <Sparkles size={18} color="#6c63ff" style={{ marginLeft: "auto" }} />
+          <LogOut size={18} /> Exit_System
         </button>
+      </header>
+
+      {/* ACTION BANNER */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-12">
+        <div className="lg:col-span-8 bg-white brutal-border brutal-shadow p-6 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="text-center md:text-left">
+            <h2 className="text-2xl font-black uppercase italic leading-none mb-2">
+              {!isConnected
+                ? "System_Status: Disconnected"
+                : "System_Status: Online"}
+            </h2>
+            <p className="font-bold text-gray-600 max-w-md">
+              {!isConnected
+                ? "Spotify link required to calibrate AI mood sensors and access global frequency database."
+                : "Mood detection arrays are primed and ready for facial analysis."}
+            </p>
+          </div>
+          {!isConnected ? (
+            <button
+              onClick={initiateSpotifyLogin}
+              className="brutal-btn bg-green-400 text-lg w-full md:w-auto"
+            >
+              CONNECT_SPOTIFY
+            </button>
+          ) : (
+            <button
+              onClick={() => setShowMood(true)}
+              className="brutal-btn bg-purple-500 text-white text-lg w-full md:w-auto flex items-center justify-center gap-2"
+            >
+              <Sparkles size={20} /> DETECT_VIBE
+            </button>
+          )}
+        </div>
+
+        <div className="lg:col-span-4 bg-black text-white brutal-border brutal-shadow p-6 flex items-center justify-center text-center">
+          <Zap size={32} className="text-amber-400 mr-4" />
+          <span className="font-black italic uppercase tracking-widest">
+            Global_Vibe_Protocol_v2.6
+          </span>
+        </div>
       </div>
 
-      {/* Top Tracks */}
-      {topTracks.length > 0 && (
-        <section
-          style={{ marginBottom: "3rem", position: "relative", zIndex: 1 }}
-        >
-          <h2 className="section-title" style={{ marginBottom: "1.25rem" }}>
-            Your Top Tracks
-          </h2>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
-              gap: "1rem",
-            }}
-          >
-            {loading
-              ? Array(5)
-                  .fill(0)
-                  .map((_, i) => <SkeletonCard key={i} />)
-              : topTracks
-                  .slice(0, 6)
-                  .map((track) => <SongCard key={track.id} track={track} />)}
-          </div>
-        </section>
-      )}
-
-      {/* New Releases */}
-      <section
-        style={{ marginBottom: "3rem", position: "relative", zIndex: 1 }}
-      >
-        <h2 className="section-title" style={{ marginBottom: "1.25rem" }}>
-          New Releases
-        </h2>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
-            gap: "1rem",
-          }}
-        >
-          {loading
-            ? Array(6)
-                .fill(0)
-                .map((_, i) => <SkeletonCard key={i} />)
-            : newReleases.map((album) => (
-                <PlaylistCard key={album.id} item={album} type="album" />
+      {/* CONTENT GRIDS */}
+      <div className="space-y-16">
+        {topTracks.length > 0 && (
+          <section>
+            <h2 className="text-3xl font-black uppercase mb-6 inline-block border-b-8 border-purple-500">
+              Your_High_Rotation
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+              {topTracks.slice(0, 6).map((track) => (
+                <SongCard key={track.id} track={track} />
               ))}
-        </div>
-      </section>
+            </div>
+          </section>
+        )}
 
-      {/* Featured Playlists */}
-      {featured.length > 0 && (
-        <section style={{ position: "relative", zIndex: 1 }}>
-          <h2 className="section-title" style={{ marginBottom: "1.25rem" }}>
-            Featured Playlists
+        <section>
+          <h2 className="text-3xl font-black uppercase mb-6 inline-block border-b-8 border-amber-400">
+            Fresh_Frequency
           </h2>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
-              gap: "1rem",
-            }}
-          >
-            {loading
-              ? Array(6)
-                  .fill(0)
-                  .map((_, i) => <SkeletonCard key={i} />)
-              : featured.map((pl) => (
-                  <PlaylistCard key={pl.id} item={pl} type="playlist" />
-                ))}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+            {newReleases.map((album) => (
+              <PlaylistCard key={album.id} item={album} type="album" />
+            ))}
           </div>
         </section>
-      )}
+      </div>
 
-      {/* Mood Detector Modal */}
       {showMood && <MoodDetector onClose={() => setShowMood(false)} />}
     </div>
   );
