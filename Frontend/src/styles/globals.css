@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @theme {
+  /* App colors */
   --color-vibe-bg: #0a0a0f;
   --color-vibe-surface: #111118;
   --color-vibe-card: #16161f;
@@ -11,15 +12,35 @@
   --color-vibe-text: #e8e8f0;
   --color-vibe-muted: #6b6b80;
 
+  /* Brutalist palette */
+  --color-brut-bg: #0a0a0a;
+  --color-brut-surface: #111111;
+  --color-brut-border: #1a1a1a;
+  --color-brut-yellow: #ffe566;
+  --color-brut-cream: #f5f0e8;
+  --color-brut-red: #ff6666;
+  --color-brut-blue: #66aaff;
+  --color-brut-purple: #cc88ff;
+  --color-brut-green: #66ffcc;
+  --color-brut-muted: #555555;
+
+  /* Fonts */
   --font-display: "Clash Display", sans-serif;
   --font-body: "DM Sans", sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  --font-mono: "Space Mono", monospace;
 
+  /* Animations */
   --animate-pulse-slow: pulse 3s ease-in-out infinite;
   --animate-wave: wave 1.5s ease-in-out infinite;
   --animate-float: float 6s ease-in-out infinite;
   --animate-glow: glow 2s ease-in-out infinite alternate;
   --animate-spin-slow: spin 8s linear infinite;
+  --animate-blink: blink 2s ease-in-out infinite;
+  --animate-scan: scan 3s linear infinite;
+  --animate-ticker: tickerMove 22s linear infinite;
+  --animate-ticker-rev: tickerMoveRev 18s linear infinite;
+  --animate-glitch: glitch 0.2s steps(1) forwards;
+  --animate-det-bar: detBar 1s ease-in-out infinite alternate;
 }
 
 @keyframes wave {
@@ -48,6 +69,94 @@
     box-shadow:
       0 0 30px #6c63ff80,
       0 0 60px #6c63ff30;
+  }
+}
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes scan {
+  0% {
+    top: 0%;
+  }
+  100% {
+    top: 100%;
+  }
+}
+@keyframes tickerMove {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-33.333%);
+  }
+}
+@keyframes tickerMoveRev {
+  from {
+    transform: translateX(-33.333%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+    color: #f5f0e8;
+  }
+  20% {
+    transform: translate(-3px, 1px);
+    color: #ffe566;
+  }
+  40% {
+    transform: translate(3px, -1px);
+    color: #ff6666;
+  }
+  60% {
+    transform: translate(-2px, 0);
+    color: #66aaff;
+  }
+  80% {
+    transform: translate(2px, 1px);
+    color: #f5f0e8;
+  }
+  100% {
+    transform: translate(0);
+    color: #f5f0e8;
+  }
+}
+@keyframes detBar {
+  from {
+    opacity: 0.4;
+    transform: scaleY(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+@keyframes moodPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+@keyframes vinylSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 
