@@ -9,9 +9,13 @@ import {
   VolumeX,
 } from "lucide-react";
 
+// Updated terminal-style formatting
 function formatMs(ms) {
   const s = Math.floor(ms / 1000);
-  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+  // Pad with leading zeros for that digital clock feel
+  const minutes = String(Math.floor(s / 60)).padStart(2, "0");
+  const seconds = String(s % 60).padStart(2, "0");
+  return `${minutes}:${seconds}`;
 }
 
 export default function Player() {
@@ -60,177 +64,64 @@ export default function Player() {
   };
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        bottom: 0,
-        left: 0,
-        right: 0,
-        height: 88,
-        background: "rgba(10,10,15,0.95)",
-        backdropFilter: "blur(20px)",
-        borderTop: "1px solid #1e1e2e",
-        display: "flex",
-        alignItems: "center",
-        padding: "0 1.5rem",
-        gap: "1rem",
-        zIndex: 100,
-      }}
-    >
-      {/* Track info */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "0.75rem",
-          width: 240,
-          minWidth: 0,
-        }}
-      >
-        <div
-          style={{
-            width: 52,
-            height: 52,
-            borderRadius: "0.5rem",
-            overflow: "hidden",
-            flexShrink: 0,
-            background: "#1e1e2e",
-          }}
-        >
-          {image && (
-            <img
-              src={image}
-              alt=""
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
+    <div className="fixed bottom-0 left-0 md:left-64 right-0 z-[100] bg-white border-t-4 md:border-t-8 border-black p-4 flex flex-col md:flex-row items-center gap-4 md:gap-6 brutal-shadow transition-all">
+      {/* 1. Track Info Section (Stacks on Mobile) */}
+      <div className="flex items-center gap-3 w-full md:w-auto md:min-w-[280px]">
+        <div className="w-16 h-16 md:w-[60px] md:h-[60px] border-4 md:border-2 border-black shrink-0 overflow-hidden bg-black flex items-center justify-center">
+          {image ? (
+            <img src={image} alt="" className="w-full h-full object-cover" />
+          ) : (
+            <span className="text-white text-2xl">💿</span>
           )}
         </div>
-        <div style={{ minWidth: 0 }}>
-          <p
-            style={{
-              fontFamily: "DM Sans, sans-serif",
-              fontWeight: 500,
-              color: "#e8e8f0",
-              fontSize: "0.875rem",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
+        <div className="min-w-0">
+          <p className="font-black text-sm md:text-base uppercase tracking-tight truncate leading-none mb-1">
             {currentTrack.name}
           </p>
-          <p
-            style={{
-              color: "#6b6b80",
-              fontSize: "0.8rem",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
+          <p className="font-bold text-[10px] md:text-xs text-gray-500 uppercase truncate">
             {artists}
           </p>
         </div>
       </div>
 
-      {/* Center controls */}
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: "0.5rem",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
+      {/* 2. Main Controls Section (Flexible Grid/Column) */}
+      <div className="flex-1 w-full flex flex-col md:flex-row items-center gap-2 md:gap-4">
+        {/* Buttons (Center Aligned) */}
+        <div className="flex items-center gap-6 md:gap-4 order-2 md:order-1">
           <button
             onClick={skipPrev}
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              color: "#6b6b80",
-              display: "flex",
-              transition: "color 0.2s",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#e8e8f0")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#6b6b80")}
+            className="text-gray-500 hover:text-black hover:scale-110 active:scale-95 transition-all"
           >
-            <SkipBack size={20} fill="currentColor" />
+            <SkipBack size={20} className="fill-current" strokeWidth={3} />
           </button>
 
           <button
             onClick={togglePlay}
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: "50%",
-              background: "#6c63ff",
-              border: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              boxShadow: "0 0 20px rgba(108,99,255,0.5)",
-              transition: "all 0.2s",
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.transform = "scale(1.08)")
-            }
-            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            className="w-14 h-14 md:w-12 md:h-12 border-4 border-black bg-purple-500 hover:bg-purple-600 text-white flex items-center justify-center brutal-shadow active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all"
           >
             {isPlaying ? (
-              <Pause size={18} color="white" fill="white" />
+              <Pause size={24} className="fill-white" strokeWidth={0} />
             ) : (
-              <Play
-                size={18}
-                color="white"
-                fill="white"
-                style={{ marginLeft: 2 }}
-              />
+              <Play size={24} className="fill-white ml-1" strokeWidth={0} />
             )}
           </button>
 
           <button
             onClick={skipNext}
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              color: "#6b6b80",
-              display: "flex",
-              transition: "color 0.2s",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#e8e8f0")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#6b6b80")}
+            className="text-gray-500 hover:text-black hover:scale-110 active:scale-95 transition-all"
           >
-            <SkipForward size={20} fill="currentColor" />
+            <SkipForward size={20} className="fill-current" strokeWidth={3} />
           </button>
         </div>
 
-        {/* Progress bar */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.75rem",
-            width: "100%",
-            maxWidth: 500,
-          }}
-        >
-          <span
-            style={{
-              color: "#6b6b80",
-              fontSize: "0.75rem",
-              fontFamily: "JetBrains Mono, monospace",
-              minWidth: 36,
-              textAlign: "right",
-            }}
-          >
+        {/* 3. Progress Bar Section (Flexible width) */}
+        <div className="w-full flex items-center gap-3 order-1 md:order-2 border-t-2 md:border-t-0 border-black pt-2 md:pt-0">
+          {/* Terminal Style Time Stamps */}
+          <span className="font-mono text-xs font-black text-purple-700 w-14 text-right bg-black text-green-400 p-1 border-2 border-black">
             {formatMs(localProgress)}
           </span>
-          <div style={{ flex: 1, position: "relative" }}>
+          <div className="flex-1 relative flex items-center group">
+            {/* The actual slider input, styled on global.css */}
             <input
               type="range"
               min={0}
@@ -239,49 +130,26 @@ export default function Player() {
               onChange={handleSeek}
               onMouseDown={() => setDragging(true)}
               onMouseUp={() => setDragging(false)}
-              style={{ width: "100%", "--progress": `${pct}%` }}
+              className="brutal-slider w-full"
+              style={{ "--progress": `${pct}%` }}
             />
           </div>
-          <span
-            style={{
-              color: "#6b6b80",
-              fontSize: "0.75rem",
-              fontFamily: "JetBrains Mono, monospace",
-              minWidth: 36,
-            }}
-          >
+          <span className="font-mono text-xs font-black text-purple-700 w-14 bg-black text-green-400 p-1 border-2 border-black">
             {formatMs(duration)}
           </span>
         </div>
       </div>
 
-      {/* Volume */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "0.75rem",
-          width: 180,
-          justifyContent: "flex-end",
-        }}
-      >
+      {/* 4. Volume Section (Hidden on narrow mobile, shown on md up) */}
+      <div className="hidden lg:flex items-center gap-3 w-[160px] justify-end border-l-2 border-black pl-4">
         <button
           onClick={toggleMute}
-          style={{
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            color: "#6b6b80",
-            display: "flex",
-            transition: "color 0.2s",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "#e8e8f0")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "#6b6b80")}
+          className="text-gray-500 hover:text-black transition-colors"
         >
           {muted || volume === 0 ? (
-            <VolumeX size={18} />
+            <VolumeX size={18} strokeWidth={3} />
           ) : (
-            <Volume2 size={18} />
+            <Volume2 size={18} strokeWidth={3} />
           )}
         </button>
         <input
@@ -293,7 +161,8 @@ export default function Player() {
             changeVolume(parseInt(e.target.value));
             setMuted(false);
           }}
-          style={{ width: 100, "--progress": `${muted ? 0 : volume}%` }}
+          className="brutal-volume-slider w-20"
+          style={{ "--progress": `${muted ? 0 : volume}%` }}
         />
       </div>
     </div>
