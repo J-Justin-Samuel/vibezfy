@@ -1,15 +1,14 @@
 import React, { useState, useCallback, useRef } from "react";
 import { spotify } from "../utils/spotify";
-import { useSpotify } from "../contexts/SpotifyContext";
 import SongCard from "../components/Home/SongCard";
 import PlaylistCard from "../components/Home/PlaylistCard";
-import { Search, X } from "lucide-react";
+import { Search as SearchIcon, X, Zap } from "lucide-react";
 
 const CATEGORIES = [
-  { label: "All", value: "track,playlist,album" },
-  { label: "Songs", value: "track" },
-  { label: "Playlists", value: "playlist" },
-  { label: "Albums", value: "album" },
+  { label: "ALL_RESULTS", value: "track,playlist,album" },
+  { label: "SONGS", value: "track" },
+  { label: "PLAYLISTS", value: "playlist" },
+  { label: "ALBUMS", value: "album" },
 ];
 
 export default function SearchPage() {
@@ -52,156 +51,103 @@ export default function SearchPage() {
   const albums = results?.albums?.items || [];
 
   return (
-    <div style={{ padding: "2rem", maxWidth: 1400, margin: "0 auto" }}>
-      <h1
-        style={{
-          fontFamily: "Clash Display, sans-serif",
-          fontSize: "2rem",
-          fontWeight: 700,
-          color: "#e8e8f0",
-          marginBottom: "1.5rem",
-        }}
-      >
-        Search
-      </h1>
+    <div className="min-h-screen bg-[#F0EBE0] p-4 md:p-8 font-sans">
+      <header className="mb-10">
+        <div className="inline-block bg-black text-white px-4 py-1 brutal-border mb-4 text-xs font-black tracking-widest uppercase">
+          Discovery_Module_v2
+        </div>
+        <h1 className="text-5xl md:text-7xl font-black uppercase italic tracking-tighter leading-none">
+          Search<span className="text-purple-600">.</span>
+        </h1>
+      </header>
 
-      {/* Search bar */}
-      <div style={{ position: "relative", marginBottom: "1.5rem" }}>
-        <Search
-          size={20}
-          color="#6b6b80"
-          style={{
-            position: "absolute",
-            left: "1.25rem",
-            top: "50%",
-            transform: "translateY(-50%)",
-          }}
-        />
-        <input
-          value={query}
-          onChange={handleInput}
-          placeholder="Artists, songs, albums, playlists..."
-          autoFocus
-          style={{
-            width: "100%",
-            background: "#16161f",
-            border: "1px solid #1e1e2e",
-            borderRadius: "1rem",
-            padding: "1rem 3rem",
-            color: "#e8e8f0",
-            fontFamily: "DM Sans, sans-serif",
-            fontSize: "1rem",
-            outline: "none",
-            transition: "border-color 0.2s",
-          }}
-          onFocus={(e) => (e.target.style.borderColor = "#6c63ff")}
-          onBlur={(e) => (e.target.style.borderColor = "#1e1e2e")}
-        />
-        {query && (
-          <button
-            onClick={() => {
-              setQuery("");
-              setResults(null);
-            }}
-            style={{
-              position: "absolute",
-              right: "1rem",
-              top: "50%",
-              transform: "translateY(-50%)",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            <X size={18} color="#6b6b80" />
-          </button>
-        )}
+      {/* SEARCH BAR CONTAINER */}
+      <div className="relative mb-8 group">
+        <div className="absolute inset-0 bg-black brutal-border translate-x-1 translate-y-1 group-focus-within:translate-x-2 group-focus-within:translate-y-2 transition-transform" />
+        <div className="relative bg-white brutal-border p-4 flex items-center gap-4">
+          <SearchIcon
+            size={28}
+            className="text-black shrink-0"
+            strokeWidth={3}
+          />
+          <input
+            value={query}
+            onChange={handleInput}
+            placeholder="ARTISTS_SONGS_ALBUMS..."
+            className="w-full bg-transparent border-none outline-none text-xl md:text-2xl font-black uppercase placeholder:text-gray-300"
+            autoFocus
+          />
+          {query && (
+            <button
+              onClick={() => {
+                setQuery("");
+                setResults(null);
+              }}
+              className="brutal-btn bg-red-400 p-1"
+            >
+              <X size={20} strokeWidth={4} />
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Category tabs */}
-      <div
-        style={{
-          display: "flex",
-          gap: "0.5rem",
-          marginBottom: "2rem",
-          flexWrap: "wrap",
-        }}
-      >
+      {/* CATEGORY TABS */}
+      <div className="flex flex-wrap gap-3 mb-12">
         {CATEGORIES.map((c) => (
           <button
             key={c.value}
             onClick={() => handleCategory(c.value)}
-            style={{
-              padding: "0.5rem 1.25rem",
-              borderRadius: "2rem",
-              border: "1px solid",
-              borderColor: category === c.value ? "#6c63ff" : "#1e1e2e",
-              background:
-                category === c.value ? "rgba(108,99,255,0.15)" : "transparent",
-              color: category === c.value ? "#6c63ff" : "#6b6b80",
-              fontFamily: "DM Sans, sans-serif",
-              fontSize: "0.875rem",
-              cursor: "pointer",
-              transition: "all 0.2s",
-            }}
+            className={`brutal-btn text-xs md:text-sm px-6 py-2 transition-colors ${
+              category === c.value
+                ? "bg-purple-500 text-white shadow-none translate-x-[2px] translate-y-[2px]"
+                : "bg-white text-black"
+            }`}
           >
             {c.label}
           </button>
         ))}
       </div>
 
-      {/* Loading */}
+      {/* LOADING STATE */}
       {loading && (
-        <div
-          style={{ display: "flex", justifyContent: "center", padding: "4rem" }}
-        >
-          <div style={{ display: "flex", gap: 4 }}>
+        <div className="flex flex-col items-center justify-center py-20 gap-4">
+          <div className="flex gap-2 h-12 items-end">
             {[0, 1, 2, 3, 4].map((i) => (
               <div
                 key={i}
-                className="waveform-bar"
-                style={{ height: 32, animationDelay: `${i * 0.1}s` }}
+                className="w-3 bg-black brutal-border animate-bounce"
+                style={{ height: "100%", animationDelay: `${i * 0.1}s` }}
               />
             ))}
           </div>
+          <p className="font-black uppercase tracking-widest text-sm">
+            Fetching_Data...
+          </p>
         </div>
       )}
 
-      {/* Empty state */}
+      {/* EMPTY STATE */}
       {!loading && !results && (
-        <div style={{ textAlign: "center", padding: "5rem 2rem" }}>
-          <div style={{ fontSize: "4rem", marginBottom: "1rem" }}>🎵</div>
-          <p
-            style={{
-              fontFamily: "Clash Display, sans-serif",
-              fontSize: "1.25rem",
-              color: "#e8e8f0",
-              marginBottom: "0.5rem",
-            }}
-          >
-            Find your next favourite
-          </p>
-          <p style={{ color: "#6b6b80", fontFamily: "DM Sans, sans-serif" }}>
-            Search for any song, artist, album or playlist
+        <div className="brutal-card bg-amber-400 p-12 text-center -rotate-1 max-w-2xl mx-auto my-10">
+          <Zap size={64} className="mx-auto mb-6 fill-black" />
+          <h2 className="text-3xl font-black uppercase mb-2 leading-none">
+            Find_Your_Frequency
+          </h2>
+          <p className="font-bold uppercase text-sm">
+            Input signal required to process audio metadata.
           </p>
         </div>
       )}
 
-      {/* Results */}
+      {/* RESULTS DISPLAY */}
       {!loading && results && (
-        <div>
+        <div className="space-y-16">
           {tracks.length > 0 && (
-            <section style={{ marginBottom: "2.5rem" }}>
-              <h2 className="section-title" style={{ marginBottom: "1rem" }}>
-                Songs
+            <section>
+              <h2 className="text-3xl font-black uppercase mb-6 inline-block border-b-8 border-purple-500 italic">
+                Audio_Tracks
               </h2>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
-                  gap: "1rem",
-                }}
-              >
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-6">
                 {tracks.map((t) => (
                   <SongCard key={t.id} track={t} />
                 ))}
@@ -210,17 +156,11 @@ export default function SearchPage() {
           )}
 
           {playlists.length > 0 && (
-            <section style={{ marginBottom: "2.5rem" }}>
-              <h2 className="section-title" style={{ marginBottom: "1rem" }}>
-                Playlists
+            <section>
+              <h2 className="text-3xl font-black uppercase mb-6 inline-block border-b-8 border-amber-400 italic">
+                Curated_Collections
               </h2>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
-                  gap: "1rem",
-                }}
-              >
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-6">
                 {playlists.filter(Boolean).map((p) => (
                   <PlaylistCard key={p.id} item={p} type="playlist" />
                 ))}
@@ -230,16 +170,10 @@ export default function SearchPage() {
 
           {albums.length > 0 && (
             <section>
-              <h2 className="section-title" style={{ marginBottom: "1rem" }}>
-                Albums
+              <h2 className="text-3xl font-black uppercase mb-6 inline-block border-b-8 border-black text-white bg-black px-2 italic">
+                Studio_Albums
               </h2>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
-                  gap: "1rem",
-                }}
-              >
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-6">
                 {albums.map((a) => (
                   <PlaylistCard key={a.id} item={a} type="album" />
                 ))}
@@ -250,14 +184,9 @@ export default function SearchPage() {
           {tracks.length === 0 &&
             playlists.length === 0 &&
             albums.length === 0 && (
-              <div style={{ textAlign: "center", padding: "3rem" }}>
-                <p
-                  style={{
-                    color: "#6b6b80",
-                    fontFamily: "DM Sans, sans-serif",
-                  }}
-                >
-                  No results for "{query}"
+              <div className="bg-white brutal-border p-12 text-center brutal-shadow">
+                <p className="font-black text-2xl uppercase">
+                  No_Signal_Detected_For: "{query}"
                 </p>
               </div>
             )}

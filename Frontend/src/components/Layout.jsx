@@ -1,285 +1,171 @@
 import React, { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useSpotify } from "../contexts/SpotifyContext";
-import { initiateSpotifyLogin } from "../utils/spotify";
 import Player from "./Player/Player";
-import { Home, Search, LogOut, Music, Zap } from "lucide-react";
+import { Home, Search, LogOut, Zap, Menu, X } from "lucide-react";
 
 const NAV = [
-  { to: "/home", icon: Home, label: "Home" },
-  { to: "/search", icon: Search, label: "Search" },
+  { to: "/home", icon: Home, label: "DASHBOARD" },
+  { to: "/search", icon: Search, label: "DISCOVER" },
 ];
 
 export default function Layout({ children }) {
   const { user } = useAuth();
   const { isConnected, currentTrack } = useSpotify();
   const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const handleLogout = () => navigate("/logout");
-
-  const sidebarW = 220;
+  const name = user?.displayName || user?.email?.split("@")[0] || "USER";
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "#0a0a0f" }}>
-      {/* Sidebar */}
+    <div className="flex flex-col md:flex-row min-h-screen bg-[#F0EBE0] text-black font-sans">
+      {/* MOBILE HEADER - Only visible on small screens */}
+      <header className="md:hidden flex items-center justify-between p-4 bg-white border-b-4 border-black sticky top-0 z-[100]">
+        <Link
+          to="/home"
+          className="font-black text-xl tracking-tighter uppercase italic"
+        >
+          VIBEZFY.
+        </Link>
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="brutal-btn p-2 bg-amber-400"
+        >
+          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </header>
+
+      {/* SIDEBAR - Desktop: Permanent, Mobile: Overlay */}
       <aside
+        className={`
+  fixed z-[90] w-64 bg-white border-r-4 border-black flex flex-col transition-transform duration-300
+  md:translate-x-0 md:static md:h-screen shrink-0
+  ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
+`}
         style={{
-          width: sidebarW,
-          minHeight: "100vh",
-          background: "#0d0d14",
-          borderRight: "1px solid #1e1e2e",
-          display: "flex",
-          flexDirection: "column",
-          padding: "1.5rem 1rem",
-          position: "fixed",
-          top: 0,
-          left: 0,
+          /* On mobile, start below the 70px header. On desktop, start at 0 */
+          top: window.innerWidth < 768 ? "70px" : "0",
+          height: window.innerWidth < 768 ? "calc(100vh - 70px)" : "100vh",
           bottom: 0,
-          zIndex: 50,
         }}
       >
-        {/* Logo */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.75rem",
-            marginBottom: "2.5rem",
-            padding: "0 0.5rem",
-          }}
-        >
-          <div
-            style={{
-              width: 36,
-              height: 36,
-              background: "#6c63ff",
-              borderRadius: "0.75rem",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0 0 20px rgba(108,99,255,0.4)",
-            }}
-          >
-            <span style={{ fontSize: "1.1rem" }}>🎵</span>
-          </div>
-          <span
-            style={{
-              fontFamily: "Clash Display, sans-serif",
-              fontSize: "1.4rem",
-              fontWeight: 700,
-            }}
-            className="text-gradient"
-          >
-            Vibezfy
-          </span>
+        {/* LOGO SECTION */}
+        <div className="p-6 border-b-4 border-black bg-purple-500 hidden md:block">
+          <Link to="/home" className="flex items-center gap-2 group">
+            <div className="w-10 h-10 bg-black text-white flex items-center justify-center brutal-border group-hover:-translate-y-1 transition-transform">
+              <span className="text-xl">🎵</span>
+            </div>
+            <span className="font-black text-2xl tracking-tighter text-white uppercase italic">
+              Vibezfy
+            </span>
+          </Link>
         </div>
 
-        {/* Nav */}
-        <nav
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "0.25rem",
-            flex: 1,
-          }}
-        >
+        {/* NAVIGATION */}
+        <nav className="flex-1 p-4 space-y-4">
+          <p className="text-[10px] font-black text-gray-400 tracking-[0.2em] mb-4">
+            SYSTEM_CORE
+          </p>
           {NAV.map(({ to, icon: Icon, label }) => (
             <NavLink
               key={to}
               to={to}
-              style={({ isActive }) => ({
-                display: "flex",
-                alignItems: "center",
-                gap: "0.75rem",
-                padding: "0.75rem 1rem",
-                borderRadius: "0.75rem",
-                textDecoration: "none",
-                fontFamily: "DM Sans, sans-serif",
-                fontWeight: 500,
-                fontSize: "0.9rem",
-                transition: "all 0.2s",
-                background: isActive ? "rgba(108,99,255,0.15)" : "transparent",
-                color: isActive ? "#6c63ff" : "#6b6b80",
-                borderLeft: isActive
-                  ? "3px solid #6c63ff"
-                  : "3px solid transparent",
-              })}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={({ isActive }) => `
+                flex items-center gap-3 p-3 font-black text-sm uppercase transition-all brutal-border
+                ${
+                  isActive
+                    ? "bg-amber-400 shadow-none translate-x-[2px] translate-y-[2px]"
+                    : "bg-white hover:bg-gray-50 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px]"
+                }
+              `}
             >
-              <Icon size={18} />
+              <Icon size={20} strokeWidth={3} />
               {label}
             </NavLink>
           ))}
 
-          {/* Spotify connect */}
-          {!isConnected && (
-            <button
-              onClick={initiateSpotifyLogin}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.75rem",
-                padding: "0.75rem 1rem",
-                borderRadius: "0.75rem",
-                background: "rgba(29,185,84,0.1)",
-                border: "1px solid rgba(29,185,84,0.2)",
-                color: "#1db954",
-                fontFamily: "DM Sans, sans-serif",
-                fontWeight: 500,
-                fontSize: "0.9rem",
-                cursor: "pointer",
-                marginTop: "0.5rem",
-                transition: "all 0.2s",
-              }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.background = "rgba(29,185,84,0.2)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.background = "rgba(29,185,84,0.1)")
-              }
-            >
-              <Zap size={18} />
-              Connect Spotify
-            </button>
-          )}
-
-          {isConnected && (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                padding: "0.75rem 1rem",
-                color: "#1db954",
-                fontFamily: "DM Sans, sans-serif",
-                fontSize: "0.8rem",
-                marginTop: "0.25rem",
-              }}
-            >
-              <div
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  background: "#1db954",
-                }}
+          {/* SPOTIFY STATUS */}
+          <div
+            className={`mt-8 p-4 brutal-border ${isConnected ? "bg-green-100" : "bg-red-100"}`}
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <Zap
+                size={14}
+                className={isConnected ? "text-green-600" : "text-red-600"}
               />
-              Spotify connected
+              <span className="text-[10px] font-black uppercase">
+                Spotify_Link
+              </span>
             </div>
-          )}
+            <p className="text-xs font-bold leading-tight">
+              {isConnected
+                ? "ENCRYPTED_CONNECTED"
+                : "SIGNAL_LOST_RECONNECT_REQ"}
+            </p>
+          </div>
         </nav>
 
-        {/* User */}
-        <div style={{ borderTop: "1px solid #1e1e2e", paddingTop: "1rem" }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.75rem",
-              marginBottom: "0.75rem",
-              padding: "0 0.25rem",
-            }}
-          >
-            <div
-              style={{
-                width: 34,
-                height: 34,
-                borderRadius: "50%",
-                background: "linear-gradient(135deg, #6c63ff, #7c3aed)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "0.85rem",
-                fontWeight: 600,
-                color: "white",
-                flexShrink: 0,
-                overflow: "hidden",
-              }}
-            >
+        {/* USER PROFILE BOX */}
+        <div className="p-4 border-t-4 border-black bg-white">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 brutal-border bg-purple-500 overflow-hidden shrink-0">
               {user?.photoURL ? (
                 <img
                   src={user.photoURL}
                   alt=""
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  className="w-full h-full object-cover"
                 />
               ) : (
-                user?.displayName?.[0]?.toUpperCase() || "?"
+                <div className="w-full h-full flex items-center justify-center text-white font-black">
+                  {name[0]}
+                </div>
               )}
             </div>
-            <div style={{ overflow: "hidden" }}>
-              <p
-                style={{
-                  fontFamily: "DM Sans, sans-serif",
-                  fontWeight: 500,
-                  color: "#e8e8f0",
-                  fontSize: "0.875rem",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              >
-                {user?.displayName || user?.email?.split("@")[0]}
+            <div className="min-w-0 overflow-hidden">
+              <p className="font-black text-xs uppercase truncate leading-none mb-1">
+                {name}
               </p>
-              <p
-                style={{
-                  color: "#6b6b80",
-                  fontSize: "0.75rem",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              >
-                {user?.email}
-              </p>
+              <span className="bg-black text-white text-[8px] px-1 font-bold">
+                VIP_ACCESS
+              </span>
             </div>
           </div>
 
           <button
-            onClick={handleLogout}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              width: "100%",
-              padding: "0.6rem 1rem",
-              borderRadius: "0.75rem",
-              background: "transparent",
-              border: "none",
-              color: "#6b6b80",
-              fontFamily: "DM Sans, sans-serif",
-              fontSize: "0.875rem",
-              cursor: "pointer",
-              transition: "all 0.2s",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(248,113,113,0.1)";
-              e.currentTarget.style.color = "#f87171";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "transparent";
-              e.currentTarget.style.color = "#6b6b80";
-            }}
+            onClick={() => navigate("/logout")}
+            className="w-full brutal-btn bg-red-400 text-xs flex items-center justify-center gap-2"
           >
-            <LogOut size={16} />
-            Sign out
+            <LogOut size={14} /> TERMINATE_SESSION
           </button>
         </div>
       </aside>
 
-      {/* Main content */}
-      <main
-        style={{
-          marginLeft: sidebarW,
-          flex: 1,
-          paddingBottom: currentTrack ? 100 : 0,
-          minHeight: "100vh",
-        }}
-      >
-        {children}
+      {/* MOBILE OVERLAY */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-[80] md:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* MAIN CONTENT AREA */}
+      <main className="flex-1 relative">
+        <div
+          className={`
+          min-h-screen
+          ${currentTrack ? "pb-32" : "pb-8"}
+        `}
+        >
+          {children}
+        </div>
       </main>
 
-      {/* Player */}
-      <Player />
+      {/* PLAYER COMPONENT */}
+      <div className="fixed bottom-0 left-0 right-0 z-[100] md:left-64">
+        <Player />
+      </div>
     </div>
   );
 }

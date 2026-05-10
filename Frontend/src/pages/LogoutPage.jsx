@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { clearTokens } from "../utils/spotify";
 
@@ -11,7 +11,7 @@ export default function LogoutPage() {
   const handleLogout = async () => {
     setLoading(true);
     try {
-      clearTokens(); // clear Spotify tokens too
+      clearTokens();
       await logout();
       navigate("/", { replace: true });
     } catch (err) {
@@ -20,339 +20,104 @@ export default function LogoutPage() {
     }
   };
 
-  const handleCancel = () => navigate("/home");
-
-  const avatar = user?.photoURL;
-  const name = user?.displayName || user?.email?.split("@")[0] || "there";
+  const name = user?.displayName || user?.email?.split("@")[0] || "USER_01";
   const email = user?.email || "";
-  const initial = name[0]?.toUpperCase() || "?";
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#0a0a0f",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "2rem",
-        position: "relative",
-        overflow: "hidden",
-        fontFamily: "DM Sans, sans-serif",
-      }}
-    >
-      {/* Background orbs */}
-      <div
-        style={{
-          position: "fixed",
-          width: 500,
-          height: 500,
-          borderRadius: "50%",
-          background: "rgba(248,113,113,0.05)",
-          filter: "blur(100px)",
-          top: -100,
-          right: -100,
-          pointerEvents: "none",
-        }}
-      />
-      <div
-        style={{
-          position: "fixed",
-          width: 400,
-          height: 400,
-          borderRadius: "50%",
-          background: "rgba(108,99,255,0.05)",
-          filter: "blur(80px)",
-          bottom: 0,
-          left: -100,
-          pointerEvents: "none",
-        }}
-      />
-
-      <div
-        style={{
-          width: "100%",
-          maxWidth: 420,
-          position: "relative",
-          zIndex: 1,
-        }}
-      >
-        {/* Logo */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.625rem",
-            marginBottom: "3rem",
-          }}
+    // Changed overflow-hidden to overflow-y-auto so mobile users can scroll if the keyboard or small screen clips content
+    <div className="min-h-screen flex flex-col bg-[#F0EBE0] font-sans overflow-y-auto">
+      {/* HEADER / NAV */}
+      <nav className="h-[70px] border-b-[4px] border-black px-4 md:px-6 flex items-center justify-between bg-white shrink-0 sticky top-0 z-50">
+        <Link
+          to="/home"
+          className="no-underline text-black font-black text-xl md:text-2xl tracking-tighter"
         >
-          <div
-            style={{
-              width: 36,
-              height: 36,
-              background: "#6c63ff",
-              borderRadius: "0.75rem",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0 0 20px rgba(108,99,255,0.4)",
-            }}
-          >
-            <span>🎵</span>
+          VIBEZFY.
+        </Link>
+      </nav>
+
+      {/* Main Container - Changed from fixed grid to flex-col on mobile, grid on desktop */}
+      <main className="flex-1 flex flex-col md:grid md:grid-cols-2">
+        {/* LEFT PANEL - VISUAL MESSAGE */}
+        <section className="bg-red-400 p-6 md:p-8 border-b-[4px] md:border-b-0 md:border-r-[4px] border-black flex flex-col justify-center items-center">
+          <div className="brutal-card bg-white p-6 md:p-8 -rotate-2 max-w-sm w-full">
+            <h2 className="text-3xl md:text-5xl font-black leading-none mb-4 uppercase italic">
+              EXITING <br className="hidden md:block" /> SYSTEM?
+            </h2>
+            <p className="font-bold text-base md:text-lg leading-tight uppercase">
+              All frequencies and facial data saved. The vibe will be here when
+              you return.
+            </p>
           </div>
-          <span
-            style={{
-              fontFamily: "Clash Display, sans-serif",
-              fontSize: "1.4rem",
-              fontWeight: 700,
-              background: "linear-gradient(135deg,#6c63ff,#a78bfa)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            Vibezfy
-          </span>
-        </div>
+        </section>
 
-        {/* Card */}
-        <div
-          style={{
-            background: "#111118",
-            border: "1px solid #1e1e2e",
-            borderRadius: "1.5rem",
-            padding: "2.5rem 2rem",
-            boxShadow: "0 40px 80px rgba(0,0,0,0.5)",
-          }}
-        >
-          {/* Icon */}
-          <div
-            style={{
-              width: 64,
-              height: 64,
-              borderRadius: "1rem",
-              background: "rgba(248,113,113,0.1)",
-              border: "1px solid rgba(248,113,113,0.2)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "1.75rem",
-              marginBottom: "1.5rem",
-            }}
-          >
-            👋
-          </div>
+        {/* RIGHT PANEL - CONFIRMATION BOX */}
+        <section className="p-6 md:p-8 flex items-center justify-center bg-[#F0EBE0]">
+          <div className="w-full max-w-md">
+            <div className="brutal-card bg-white p-6 md:p-8">
+              <h3 className="text-lg md:text-xl font-black uppercase mb-6 border-b-4 border-black pb-2 inline-block">
+                USER_CALIBRATION:
+              </h3>
 
-          <h1
-            style={{
-              fontFamily: "Clash Display, sans-serif",
-              fontSize: "1.75rem",
-              fontWeight: 700,
-              color: "#e8e8f0",
-              marginBottom: "0.5rem",
-            }}
-          >
-            Signing out?
-          </h1>
-          <p
-            style={{
-              color: "#6b6b80",
-              fontSize: "0.95rem",
-              lineHeight: 1.6,
-              marginBottom: "2rem",
-            }}
-          >
-            Your playlists and vibe settings will be saved. You can always come
-            back!
-          </p>
+              {/* USER INFO BLOCK */}
+              <div className="brutal-border p-4 mb-8 bg-gray-50 flex items-center gap-4">
+                {/* Avatar handling for mobile */}
+                <div className="w-12 h-12 md:w-16 md:h-16 brutal-border bg-purple-500 overflow-hidden shrink-0">
+                  {user?.photoURL ? (
+                    <img
+                      src={user.photoURL}
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-white font-black text-xl md:text-2xl">
+                      {name[0]}
+                    </div>
+                  )}
+                </div>
+                <div className="min-w-0">
+                  <p className="font-black text-base md:text-lg uppercase truncate leading-none mb-1">
+                    {name}
+                  </p>
+                  <p className="font-bold text-[10px] md:text-xs text-gray-500 uppercase truncate">
+                    {email}
+                  </p>
+                </div>
+              </div>
 
-          {/* User info card */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "1rem",
-              background: "#16161f",
-              border: "1px solid #1e1e2e",
-              borderRadius: "1rem",
-              padding: "1rem",
-              marginBottom: "2rem",
-            }}
-          >
-            <div
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: "50%",
-                flexShrink: 0,
-                background: "linear-gradient(135deg, #6c63ff, #7c3aed)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "1rem",
-                fontWeight: 700,
-                color: "white",
-                overflow: "hidden",
-              }}
-            >
-              {avatar ? (
-                <img
-                  src={avatar}
-                  alt=""
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              ) : (
-                initial
-              )}
+              {/* ACTION BUTTONS */}
+              <div className="flex flex-col gap-4">
+                <button
+                  onClick={handleLogout}
+                  disabled={loading}
+                  className="brutal-btn bg-red-400 py-3 md:py-4 text-lg md:text-xl group relative overflow-hidden"
+                >
+                  <span className={loading ? "opacity-0" : "opacity-100"}>
+                    {loading ? "CLEARING..." : "YES_SIGN_OUT"}
+                  </span>
+                  {loading && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-6 h-6 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                  )}
+                </button>
+
+                <button
+                  onClick={() => navigate("/home")}
+                  disabled={loading}
+                  className="brutal-btn bg-white py-2 md:py-3 text-xs md:text-sm"
+                >
+                  ABORT_LOGOUT_AND_VIBE
+                </button>
+              </div>
             </div>
-            <div style={{ minWidth: 0 }}>
-              <p
-                style={{
-                  fontWeight: 600,
-                  color: "#e8e8f0",
-                  fontSize: "0.95rem",
-                  marginBottom: 2,
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              >
-                {name}
-              </p>
-              <p
-                style={{
-                  color: "#6b6b80",
-                  fontSize: "0.8rem",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              >
-                {email}
-              </p>
-            </div>
-            {/* Green connected dot */}
-            <div
-              style={{
-                marginLeft: "auto",
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-                flexShrink: 0,
-              }}
-            >
-              <div
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  background: "#1db954",
-                }}
-              />
-              <span style={{ color: "#6b6b80", fontSize: "0.75rem" }}>
-                Active
-              </span>
-            </div>
+
+            <p className="mt-6 text-center font-black text-[10px] uppercase tracking-widest text-gray-400 pb-8 md:pb-0">
+              Session_End_Protocol_V2.6 // Secure_Exit_Ready
+            </p>
           </div>
-
-          {/* Buttons */}
-          <div
-            style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}
-          >
-            <button
-              onClick={handleLogout}
-              disabled={loading}
-              style={{
-                width: "100%",
-                padding: "0.875rem",
-                borderRadius: "0.875rem",
-                background: loading ? "rgba(248,113,113,0.5)" : "#f87171",
-                border: "none",
-                color: "white",
-                fontFamily: "DM Sans, sans-serif",
-                fontWeight: 600,
-                fontSize: "0.95rem",
-                cursor: loading ? "not-allowed" : "pointer",
-                transition: "all 0.2s",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "0.5rem",
-                boxShadow: loading
-                  ? "none"
-                  : "0 8px 25px rgba(248,113,113,0.3)",
-              }}
-              onMouseEnter={(e) => {
-                if (!loading) e.currentTarget.style.background = "#ef4444";
-              }}
-              onMouseLeave={(e) => {
-                if (!loading) e.currentTarget.style.background = "#f87171";
-              }}
-            >
-              {loading ? (
-                <>
-                  <span
-                    style={{
-                      width: 16,
-                      height: 16,
-                      border: "2px solid rgba(255,255,255,0.4)",
-                      borderTopColor: "white",
-                      borderRadius: "50%",
-                      animation: "spin 0.7s linear infinite",
-                      display: "inline-block",
-                    }}
-                  />
-                  Signing out...
-                </>
-              ) : (
-                <>👋 Yes, sign me out</>
-              )}
-            </button>
-
-            <button
-              onClick={handleCancel}
-              disabled={loading}
-              style={{
-                width: "100%",
-                padding: "0.875rem",
-                borderRadius: "0.875rem",
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid #1e1e2e",
-                color: "#6b6b80",
-                fontFamily: "DM Sans, sans-serif",
-                fontWeight: 500,
-                fontSize: "0.95rem",
-                cursor: loading ? "not-allowed" : "pointer",
-                transition: "all 0.2s",
-              }}
-              onMouseEnter={(e) => {
-                if (!loading) {
-                  e.currentTarget.style.borderColor = "rgba(108,99,255,0.4)";
-                  e.currentTarget.style.color = "#e8e8f0";
-                }
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "#1e1e2e";
-                e.currentTarget.style.color = "#6b6b80";
-              }}
-            >
-              ← Back to Vibezfy
-            </button>
-          </div>
-        </div>
-
-        <p
-          style={{
-            textAlign: "center",
-            color: "#6b6b80",
-            fontSize: "0.8rem",
-            marginTop: "1.5rem",
-          }}
-        >
-          Your mood history and playlists are saved to your account.
-        </p>
-      </div>
-
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        </section>
+      </main>
     </div>
   );
 }

@@ -2,13 +2,30 @@
 @import url("https://fonts.googleapis.com/css2?family=Sora:wght@800&family=Space+Grotesk:wght@500;700&display=swap");
 
 @theme {
-  --color-bg: #f0ebe0; /* Light cream background for better contrast */
+  --color-bg: #f0ebe0;
   --color-main: #e8a838;
   --color-accent: #c084fc;
   --color-dark: #0e0d0b;
   --font-brutal: "Space Grotesk", sans-serif;
 }
 
+/* 1. Custom Utilities (Fixed for Prettier & Tailwind v4) */
+@utility brutal-border {
+  @apply border-[3px] border-[#0e0d0b];
+}
+
+@utility brutal-shadow {
+  @apply shadow-[4px_4px_0px_0px_rgba(0,0,0,1)];
+}
+
+@utility brutal-shadow-hover {
+  @apply transition-all;
+  &:hover {
+    @apply shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] -translate-x-1 -translate-y-1;
+  }
+}
+
+/* 2. Standard CSS / Base Styles */
 * {
   box-sizing: border-box;
 }
@@ -26,10 +43,10 @@ body {
   overflow: hidden;
 }
 
-/* The "Brutal" Border & Shadow */
+/* 3. Component Classes */
 .brutal-card {
   background: white;
-  border: 3px solid #0e0d0b;
+  @apply brutal-border;
   box-shadow: 8px 8px 0px #0e0d0b;
   transition: all 0.15s ease;
 }
@@ -42,12 +59,8 @@ body {
 
 .brutal-btn {
   background: var(--color-main);
-  border: 3px solid #0e0d0b;
-  box-shadow: 4px 4px 0px #0e0d0b;
-  font-weight: 800;
-  text-transform: uppercase;
+  @apply brutal-border brutal-shadow font-black uppercase transition-all px-4 py-2;
   cursor: pointer;
-  transition: all 0.1s;
 }
 
 .brutal-btn:active {
@@ -55,6 +68,7 @@ body {
   box-shadow: 0px 0px 0px #0e0d0b;
 }
 
+/* 4. Animations & Layout */
 @keyframes marquee {
   0% {
     transform: translateX(0);
@@ -80,50 +94,32 @@ body {
   animation: marquee 20s linear infinite;
 }
 
-/* Brutalist Input Focus */
+/* 5. Interactive Elements */
 input:focus {
   background-color: #fdfdfd;
   box-shadow: 4px 4px 0px #0e0d0b;
   transform: translate(-2px, -2px);
+  outline: none;
 }
 
-/* Specific Link Hover for Brutalism */
 a:hover {
   text-decoration: underline;
   text-decoration-thickness: 3px;
 }
 
-/* Responsive adjustment for Mobile */
+/* 6. Responsive Adjustments */
 @media (max-width: 768px) {
   html,
   body {
-    overflow-y: auto; /* Allow scrolling on mobile */
+    overflow-y: auto;
   }
-
   main {
     grid-template-columns: 1fr;
     overflow-y: auto;
   }
-
-  /* Hide the visual/info panels on very small mobile to save space for the form */
   section:first-of-type {
     padding: 2rem 1rem;
     border-right: none;
     border-bottom: 4px solid #0e0d0b;
-  }
-}
-
-@layer components {
-  .brutal-border {
-    @apply border-[3px] border-black;
-  }
-  .brutal-shadow {
-    @apply shadow-[4px_4px_0px_0px_rgba(0,0,0,1)];
-  }
-  .brutal-shadow-hover {
-    @apply hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-1 hover:-translate-y-1 transition-all;
-  }
-  .brutal-btn {
-    @apply brutal-border brutal-shadow active:shadow-none active:translate-x-[2px] active:translate-y-[2px] font-black uppercase transition-all px-4 py-2;
   }
 }
