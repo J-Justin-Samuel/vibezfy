@@ -135,7 +135,7 @@ export default function Layout({ children }) {
 
           <button
             onClick={() => navigate("/logout")}
-            className="w-full brutal-btn bg-red-400 text-xs flex items-center justify-center gap-2"
+            className="w-full brutal-btn brutal-btn-hover bg-red-400 text-xs flex items-center justify-center gap-2"
           >
             <LogOut size={14} /> TERMINATE_SESSION
           </button>

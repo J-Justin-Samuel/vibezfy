@@ -101,7 +101,7 @@ export default function HomePage() {
 
         <button
           onClick={() => navigate("/logout")}
-          className="brutal-btn bg-red-400 flex items-center gap-2 text-sm"
+          className="brutal-btn brutal-btn brutal-btn-hover bg-red-400 flex items-center gap-2 text-sm"
         >
           <LogOut size={18} /> Exit_System
         </button>
@@ -125,14 +125,14 @@ export default function HomePage() {
           {!isConnected ? (
             <button
               onClick={initiateSpotifyLogin}
-              className="brutal-btn bg-green-400 text-lg w-full md:w-auto"
+              className="brutal-btn brutal-btn brutal-btn-hover bg-green-400 text-lg w-full md:w-auto"
             >
               CONNECT_SPOTIFY
             </button>
           ) : (
             <button
               onClick={() => setShowMood(true)}
-              className="brutal-btn bg-purple-500 text-white text-lg w-full md:w-auto flex items-center justify-center gap-2"
+              className="brutal-btn brutal-btn brutal-btn-hover bg-purple-500 text-white text-lg w-full md:w-auto flex items-center justify-center gap-2"
             >
               <Sparkles size={20} /> DETECT_VIBE
             </button>

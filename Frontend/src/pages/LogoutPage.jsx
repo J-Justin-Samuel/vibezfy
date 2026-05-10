@@ -90,7 +90,7 @@ export default function LogoutPage() {
                 <button
                   onClick={handleLogout}
                   disabled={loading}
-                  className="brutal-btn bg-red-400 py-3 md:py-4 text-lg md:text-xl group relative overflow-hidden"
+                  className="brutal-btn brutal-btn brutal-btn-hover bg-red-400 py-3 md:py-4 text-lg md:text-xl group relative overflow-hidden"
                 >
                   <span className={loading ? "opacity-0" : "opacity-100"}>
                     {loading ? "CLEARING..." : "YES_SIGN_OUT"}
@@ -105,7 +105,7 @@ export default function LogoutPage() {
                 <button
                   onClick={() => navigate("/home")}
                   disabled={loading}
-                  className="brutal-btn bg-white py-2 md:py-3 text-xs md:text-sm"
+                  className="brutal-btn brutal-btn brutal-btn-hover bg-white py-2 md:py-3 text-xs md:text-sm"
                 >
                   ABORT_LOGOUT_AND_VIBE
                 </button>

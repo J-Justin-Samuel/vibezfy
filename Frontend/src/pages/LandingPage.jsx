@@ -53,7 +53,7 @@ export default function LandingPage() {
       >
         <h1 style={{ fontWeight: 800, fontSize: "1.5rem" }}>VIBEZFY.</h1>
         <button
-          className="brutal-btn"
+          className="brutal-btn brutal-btn-hover"
           style={{ padding: "8px 16px" }}
           onClick={() => navigate("/login")}
         >
@@ -131,7 +131,7 @@ export default function LandingPage() {
             The brutalist music player that scans your face to match the vibe.
           </p>
           <button
-            className="brutal-btn"
+            className="brutal-btn brutal-btn-hover"
             style={{
               padding: "15px 30px",
               fontSize: "1.2rem",

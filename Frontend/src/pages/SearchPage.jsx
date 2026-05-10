@@ -83,7 +83,7 @@ export default function SearchPage() {
                 setQuery("");
                 setResults(null);
               }}
-              className="brutal-btn bg-red-400 p-1"
+              className="brutal-btn  bg-red-400 p-1"
             >
               <X size={20} strokeWidth={4} />
             </button>
@@ -97,7 +97,7 @@ export default function SearchPage() {
           <button
             key={c.value}
             onClick={() => handleCategory(c.value)}
-            className={`brutal-btn text-xs md:text-sm px-6 py-2 transition-colors ${
+            className={`brutal-btn brutal-btn brutal-btn-hover text-xs md:text-sm px-6 py-2 transition-colors ${
               category === c.value
                 ? "bg-purple-500 text-white shadow-none translate-x-[2px] translate-y-[2px]"
                 : "bg-white text-black"

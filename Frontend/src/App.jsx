@@ -18,55 +18,43 @@ import Layout from "./components/Layout";
 // ── Loading screen ────────────────────────────────────────────────────────
 function LoadingScreen() {
   return (
-    <div
-      style={{
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "#0a0a0f",
-        gap: "1.5rem",
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-        <div
-          style={{
-            width: 36,
-            height: 36,
-            background: "#6c63ff",
-            borderRadius: "0.75rem",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            boxShadow: "0 0 20px rgba(108,99,255,0.5)",
-          }}
-        >
-          <span style={{ fontSize: "1.1rem" }}>🎵</span>
+    <div className="fixed inset-0 z-[999] flex flex-col items-center justify-center bg-[#F0EBE0] p-6">
+      <div className="flex flex-col items-center gap-8">
+        {/* LOGO - High Contrast */}
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-black text-white flex items-center justify-center brutal-border shadow-[4px_4px_0px_0px_rgba(108,99,255,1)]">
+            <span className="text-lg">🎵</span>
+          </div>
+          <h1 className="font-black text-3xl tracking-tighter uppercase italic">
+            Vibezfy<span className="text-purple-600">.</span>
+          </h1>
         </div>
-        <span
-          style={{
-            fontFamily: "Clash Display, sans-serif",
-            fontSize: "1.75rem",
-            fontWeight: 700,
-            background: "linear-gradient(135deg, #6c63ff, #a78bfa)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}
-        >
-          Vibezfy
-        </span>
-      </div>
-      <div
-        style={{ display: "flex", alignItems: "flex-end", gap: 4, height: 32 }}
-      >
-        {[0, 1, 2, 3, 4].map((i) => (
-          <div
-            key={i}
-            className="waveform-bar"
-            style={{ height: 24, animationDelay: `${i * 0.1}s` }}
-          />
-        ))}
+
+        {/* FREQUENCY WAVE ANIMATION */}
+        <div className="flex items-center gap-2 h-24">
+          {[...Array(8)].map((_, i) => (
+            <div
+              key={i}
+              className="w-4 bg-black brutal-border"
+              style={{
+                animation: `brutalWave 1s ease-in-out infinite`,
+                animationDelay: `${i * 0.1}s`,
+                // Different heights to start for a natural feel
+                height: `${20 + (i % 3) * 20}%`,
+              }}
+            />
+          ))}
+        </div>
+
+        {/* STATUS TAG */}
+        <div className="relative">
+          <div className="absolute inset-0 bg-black brutal-border translate-x-1 translate-y-1" />
+          <div className="relative bg-amber-400 brutal-border px-6 py-2">
+            <span className="font-black text-sm uppercase tracking-widest animate-pulse">
+              Analyzing_Frequencies...
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );

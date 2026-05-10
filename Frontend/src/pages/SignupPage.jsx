@@ -150,7 +150,7 @@ export default function SignupPage() {
               />
 
               <button
-                className="brutal-btn"
+                className="brutal-btn brutal-btn-hover"
                 style={{ width: "100%", padding: "15px", marginTop: "0.5rem" }}
               >
                 SIGN_UP

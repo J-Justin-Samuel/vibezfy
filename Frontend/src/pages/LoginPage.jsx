@@ -168,7 +168,7 @@ export default function LoginPage() {
               </div>
 
               <button
-                className="brutal-btn"
+                className="brutal-btn brutal-btn-hover"
                 style={{ width: "100%", padding: "15px", marginBottom: "1rem" }}
               >
                 LOGIN
@@ -177,7 +177,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={loginWithGoogle}
-                className="brutal-btn"
+                className="brutal-btn brutal-btn-hover"
                 style={{
                   width: "100%",
                   padding: "12px",
@@ -190,9 +190,11 @@ export default function LoginPage() {
                 }}
               >
                 <img
-                  src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg"
-                  width="16"
-                  alt=""
+                  src="https://www.google.com/favicon.ico"
+                  width="18"
+                  height="18"
+                  alt="Google"
+                  style={{ objectFit: "contain" }}
                 />
                 LOGIN_WITH_GOOGLE
               </button>
